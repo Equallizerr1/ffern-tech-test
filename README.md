@@ -34,3 +34,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+Requirements
+
+1. Customer Search & Overview
+
+- [x] Search functionality to find customers by email, name, or UUID
+- [x] Customer profile view showing basic information and membership status
+- [x] Display customer's membership details (membership type, status, billing info)
+
+2. Order Management
+
+- [x] List all orders for a selected customer
+- [x] Order details view with line items and pricing
+- [x] Order status tracking (pending, shipped, delivered, etc.)
+- [x] Shipment information and tracking
+Bonus: 3. Returns & Exchanges
+If you have time, feel free to implement the following (but please only if you have time):
+- [ ] Return details including reasons and status
+- [ ] Exchange tracking and replacement item information
+- [ ] Credit/refund information for returns
