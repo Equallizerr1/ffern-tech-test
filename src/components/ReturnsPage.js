@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DataTable from "./DataTable";
 import ReturnDetailsModal from "./ReturnDetailsModal";
+import SettingsModal from "./SettingsModal"; // <-- Import the SettingsModal
 
 const ALL_RETURN_COLUMNS = [
 	{ key: "id", label: "Return ID" },
@@ -27,9 +28,16 @@ export default function ReturnsPage({
 	reverseShipments,
 	exchanges,
 	exchangeLineItems,
-	users,
 }) {
 	const [selectedReturn, setSelectedReturn] = useState(null);
+	const [showSettings, setShowSettings] = useState(false);
+	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_RETURN_COLUMNS);
+
+	const handleColumnToggle = (key) => {
+		setVisibleColumns((cols) =>
+			cols.includes(key) ? cols.filter((col) => col !== key) : [...cols, key]
+		);
+	};
 
 	const tableData = returns.map((r) => {
 		// Find all reverse shipments for this return
@@ -37,13 +45,24 @@ export default function ReturnsPage({
 		// Find all exchanges for this return
 		const relatedExchanges = exchanges.filter((e) => e.return_id === r.id);
 
-		// Get customer name from the first shipment's sender_name, fallback to user_id
+		// Get all exchange IDs for this return
+		const relatedExchangeIds = relatedExchanges.map((e) => e.id);
+
+		// Only show exchangeLineItems for exchanges belonging to this return
+		const replacementItems = exchangeLineItems
+			.filter((item) => relatedExchangeIds.includes(item.exchange_id))
+			.filter((item) => item.product_id)
+			.map((item, i) => (
+				<div key={`ship-repl-${i}`}>
+					<b>{item.product_id}</b>
+				</div>
+			));
+
 		const customer =
 			shipments.length && shipments[0].sender_name
 				? shipments[0].sender_name
 				: r.user_id || "Unknown";
 
-		// Combine tracking numbers and replacement items from all shipments/exchanges
 		const exchangeTracking = shipments.length
 			? shipments.map((shipment, idx) => [
 					shipment.tracking_number && (
@@ -69,28 +88,11 @@ export default function ReturnsPage({
 			  ])
 			: "N/A";
 
-		const replacementItems = [
-			...shipments
-				.filter((s) => s.replacement_item)
-				.map((s, i) => (
-					<div key={`ship-repl-${i}`}>
-						<b>{s.replacement_item}</b>
-					</div>
-				)),
-			...relatedExchanges
-				.filter((e) => e.replacement_item)
-				.map((e, i) => (
-					<div key={`exch-repl-${i}`}>
-						<b>{e.replacement_item}</b>
-					</div>
-				)),
-		];
-
 		return {
 			...r,
 			customer,
 			exchange_tracking: exchangeTracking,
-			replacement_item: replacementItems.length ? replacementItems : "N/A",
+			replacement_item: replacementItems,
 			status: r.status || "Pending",
 			created_at: new Date(r.created_at).toLocaleString(),
 		};
@@ -99,10 +101,41 @@ export default function ReturnsPage({
 	return (
 		<div>
 			<h1>Returns Page</h1>
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "flex-end",
+					marginBottom: 12,
+				}}>
+				<button
+					style={{
+						border: "2px solid #222",
+						borderRadius: 4,
+						padding: "4px 12px",
+						background: "#fff",
+						color: "#222",
+						cursor: "pointer",
+						outline: "2px solid #222",
+						fontWeight: "bold",
+					}}
+					onClick={() => setShowSettings(true)}>
+					Settings
+				</button>
+			</div>
+			<SettingsModal
+				open={showSettings}
+				onClose={() => setShowSettings(false)}
+				allColumns={ALL_RETURN_COLUMNS}
+				visibleColumns={visibleColumns}
+				onColumnToggle={handleColumnToggle}
+				onClearAll={() => setVisibleColumns([])}
+				onResetDefault={() => setVisibleColumns(DEFAULT_RETURN_COLUMNS)}
+				defaultColumns={DEFAULT_RETURN_COLUMNS}
+			/>
 			<DataTable
 				data={tableData}
 				columns={ALL_RETURN_COLUMNS}
-				visibleColumns={DEFAULT_RETURN_COLUMNS}
+				visibleColumns={visibleColumns}
 				onRowClick={(row) => setSelectedReturn(row)}
 				// ...other props
 			/>
