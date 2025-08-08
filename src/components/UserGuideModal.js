@@ -90,47 +90,21 @@ For further assistance, contact your technical support team.
 export default function UserGuideModal({ open, onClose }) {
 	if (!open) return null;
 	return (
-		<div
-			style={{
-				position: "fixed",
-				top: 0,
-				left: 0,
-				width: "100vw",
-				height: "100vh",
-				background: "rgba(0,0,0,0.3)",
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "center",
-				zIndex: 1000,
-			}}
-			onClick={onClose}>
+		<div className="modal-overlay" onClick={onClose}>
 			<div
+				className="modal"
 				style={{
-					background: "#fff",
-					color: "#222",
-					padding: 32,
-					borderRadius: 8,
-					minWidth: 320,
-					maxWidth: "90vw",
-					maxHeight: "90vh",
-					overflowY: "auto",
-					boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
+					paddingTop: 56, // add extra top padding for the close button
 					position: "relative",
 				}}
 				onClick={(e) => e.stopPropagation()}>
 				<button
+					className="btn btn-ghost close"
 					style={{
 						position: "absolute",
-						top: 16,
-						right: 16,
-						border: "2px solid #222",
-						borderRadius: 4,
-						padding: "4px 12px",
-						background: "#fff",
-						color: "#222",
-						cursor: "pointer",
-						outline: "2px solid #222",
-						fontWeight: "bold",
+						top: 14,
+						right: 14,
+						zIndex: 2,
 					}}
 					onClick={onClose}>
 					Close
@@ -141,8 +115,8 @@ export default function UserGuideModal({ open, onClose }) {
 							<h1
 								style={{
 									fontSize: "2.2rem",
-									fontWeight: "bold",
-									margin: "1.5rem 0 1rem 0",
+									fontWeight: "800",
+									margin: "0 0 12px",
 								}}
 								{...props}
 							/>
@@ -151,8 +125,8 @@ export default function UserGuideModal({ open, onClose }) {
 							<h2
 								style={{
 									fontSize: "1.5rem",
-									fontWeight: "bold",
-									margin: "1.2rem 0 0.8rem 0",
+									fontWeight: "700",
+									margin: "18px 0 8px",
 								}}
 								{...props}
 							/>

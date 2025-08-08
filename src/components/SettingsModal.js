@@ -10,108 +10,64 @@ export default function SettingsModal({
 	onClearAll,
 	onResetDefault,
 	defaultColumns,
-	title = "Choose columns to display",
 }) {
 	if (!open) return null;
-
 	return (
 		<div
+			className="modal-overlay"
+			onClick={onClose} // <-- Clicking the overlay closes the modal
 			style={{
 				position: "fixed",
-				top: 0,
-				left: 0,
-				width: "100vw",
-				height: "100vh",
-				background: "rgba(0,0,0,0.3)",
+				inset: 0,
+				background: "rgba(0,0,0,0.5)",
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "center",
 				zIndex: 1000,
 			}}>
 			<div
+				className="modal"
 				style={{
-					background: "#fff",
-					color: "#222",
-					padding: 24,
-					borderRadius: 8,
-					minWidth: 320,
-					maxWidth: "90vw",
-					maxHeight: "90vh",
-					boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
 					position: "relative",
-					overflowY: "auto",
-				}}>
-				<h3 style={{ fontWeight: "bold" }}>{title}</h3>
-				{/* List of all columns with checkboxes */}
-				<div
+					minWidth: 340,
+					maxWidth: 480,
+					paddingTop: 56,
+				}}
+				onClick={(e) => e.stopPropagation()} // <-- Prevent click inside modal from closing
+			>
+				<button
+					className="btn btn-ghost close"
 					style={{
-						display: "grid",
-						gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-						gap: "8px 24px",
-						maxWidth: "100%",
-					}}>
+						position: "absolute",
+						top: 14,
+						right: 14,
+						zIndex: 2,
+					}}
+					onClick={onClose}>
+					Close
+				</button>
+				<h2 style={{ marginBottom: 16 }}>Table Settings</h2>
+				<div style={{ marginBottom: 16 }}>
 					{allColumns.map((col) => (
-						<div key={col.key}>
+						<div key={col.key} style={{ marginBottom: 8 }}>
 							<label>
 								<input
 									type="checkbox"
 									checked={visibleColumns.includes(col.key)}
 									onChange={() => onColumnToggle(col.key)}
+									style={{ marginRight: 8 }}
 								/>
 								{col.label}
 							</label>
 						</div>
 					))}
 				</div>
-				{/* Action buttons for clearing, resetting, or closing */}
-				<div
-					style={{
-						display: "flex",
-						gap: 8,
-						marginTop: 16,
-						flexWrap: "wrap",
-					}}>
-					<button
-						style={{
-							border: "2px solid #222",
-							borderRadius: 4,
-							padding: "4px 12px",
-							background: "#fff",
-							color: "#222",
-							cursor: "pointer",
-							outline: "2px solid #222",
-							fontWeight: "bold",
-						}}
-						onClick={onClearAll}>
+				<div style={{ display: "flex", gap: 8 }}>
+					<button className="btn btn-ghost" onClick={onClearAll}>
 						Clear All
 					</button>
-					<button
-						style={{
-							border: "2px solid #222",
-							borderRadius: 4,
-							padding: "4px 12px",
-							background: "#fff",
-							color: "#222",
-							cursor: "pointer",
-							outline: "2px solid #222",
-							fontWeight: "bold",
-						}}
-						onClick={onResetDefault}>
+					<button className="btn btn-ghost" onClick={onResetDefault}>
 						Reset to Default
-					</button>
-					<button
-						style={{
-							border: "2px solid #222",
-							borderRadius: 4,
-							padding: "4px 12px",
-							background: "#fff",
-							color: "#222",
-							cursor: "pointer",
-							outline: "2px solid #222",
-							fontWeight: "bold",
-						}}
-						onClick={onClose}>
-						Close
 					</button>
 				</div>
 			</div>

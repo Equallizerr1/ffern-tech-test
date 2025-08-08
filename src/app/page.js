@@ -7,6 +7,31 @@ import ReturnsPage from "../components/ReturnsPage";
 import SearchBar from "../components/SearchBar";
 import UserGuideModal from "../components/UserGuideModal"; // Make sure this file exists
 
+// Theme toggle component
+function ThemeToggle() {
+	const [theme, setTheme] = useState(() => {
+		if (typeof window !== "undefined") {
+			return localStorage.getItem("theme") || "dark";
+		}
+		return "dark";
+	});
+
+	useEffect(() => {
+		document.documentElement.setAttribute("data-theme", theme);
+		localStorage.setItem("theme", theme);
+	}, [theme]);
+
+	return (
+		<button
+			className="btn btn-ghost"
+			style={{ marginLeft: 12 }}
+			onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+			aria-label="Toggle light/dark mode">
+			{theme === "dark" ? "🌙 Dark" : "🌞 Light"}
+		</button>
+	);
+}
+
 // Main dashboard component for the Customer Service app
 export default function Home() {
 	// State for all data entities
@@ -102,88 +127,42 @@ export default function Home() {
 	);
 
 	return (
-		<div>
-			{/* Main dashboard title */}
-			<h1 style={{ fontSize: "2.5rem" }}>Customer Service Dashboard</h1>
-			{/* Navigation buttons and User Guide button in a single row */}
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-					marginBottom: 12,
-				}}>
-				<div>
+		<div className="page">
+			<div className="toolbar">
+				<div className="seg">
 					<button
-						onClick={() => setPage("customers")}
-						style={{
-							marginRight: 8,
-							border: "2px solid #222",
-							borderRadius: 4,
-							padding: "4px 12px",
-							background: "#fff",
-							color: "#222",
-							cursor: "pointer",
-							outline: "2px solid #222",
-							fontWeight: "bold",
-						}}>
+						className={page === "customers" ? "active" : ""}
+						onClick={() => setPage("customers")}>
 						Customers
 					</button>
 					<button
-						onClick={() => setPage("orders")}
-						style={{
-							border: "2px solid #222",
-							borderRadius: 4,
-							padding: "4px 12px",
-							background: "#fff",
-							color: "#222",
-							cursor: "pointer",
-							outline: "2px solid #222",
-							fontWeight: "bold",
-						}}>
+						className={page === "orders" ? "active" : ""}
+						onClick={() => setPage("orders")}>
 						Orders
 					</button>
 					<button
-						onClick={() => setPage("returns")}
-						style={{
-							border: "2px solid #222",
-							borderRadius: 4,
-							padding: "4px 12px",
-							background: "#fff",
-							color: "#222",
-							cursor: "pointer",
-							outline: "2px solid #222",
-							fontWeight: "bold",
-							marginLeft: 8,
-						}}>
+						className={page === "returns" ? "active" : ""}
+						onClick={() => setPage("returns")}>
 						Returns
 					</button>
 				</div>
-				<button
-					style={{
-						border: "2px solid #222",
-						borderRadius: 4,
-						padding: "4px 12px",
-						background: "#fff",
-						color: "#222",
-						cursor: "pointer",
-						outline: "2px solid #222",
-						fontWeight: "bold",
-						marginRight: 120,
-					}}
-					onClick={() => setShowGuide(true)}>
-					User Guide
-				</button>
+				<div style={{ display: "flex", alignItems: "center" }}>
+					<button className="btn btn-ghost" onClick={() => setShowGuide(true)}>
+						User Guide
+					</button>
+					<ThemeToggle />
+				</div>
 			</div>
-			<UserGuideModal open={showGuide} onClose={() => setShowGuide(false)} />
 
-			{/* Search bar for filtering users, orders, or returns */}
+			<h1>Customer Service Dashboard</h1>
+
+			{/* Search */}
 			<SearchBar
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 				placeholder="Search an order, user, or return"
-				style={{ marginBottom: "1rem" }}
 			/>
+
 			{/* Loading and error states */}
 			{loading && (
 				<div style={{ margin: "2rem 0", textAlign: "center" }}>
@@ -251,6 +230,7 @@ export default function Home() {
 					)}
 				</>
 			)}
+			<UserGuideModal open={showGuide} onClose={() => setShowGuide(false)} />
 		</div>
 	);
 }

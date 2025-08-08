@@ -191,7 +191,8 @@ export default function OrdersPage({
 				currentPage={currentPage}
 				rowsPerPage={rowsPerPage}
 				onPageChange={handlePageChange}
-				onShowSettings={() => setShowSettings(true)} // Pass handler to DataTable
+				onShowSettings={() => setShowSettings(true)}
+				minTableWidth="1600px" // ensure horizontal scrollbar appears
 			/>
 
 			{/* Modal for detailed order info */}
