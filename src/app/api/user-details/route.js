@@ -1,5 +1,5 @@
 // This API route runs only on the server, so secrets are safe here.
-export default async function handler(req, res) {
+export async function GET(request) {
 	const username = process.env.FFERN_API_USERNAME;
 	const password = process.env.FFERN_API_PASSWORD;
 	const basicAuth = Buffer.from(`${username}:${password}`).toString("base64");
@@ -16,11 +16,12 @@ export default async function handler(req, res) {
 	);
 
 	if (!apiRes.ok) {
-		return res
-			.status(apiRes.status)
-			.json({ error: "Failed to fetch user details" });
+		return new Response(
+			JSON.stringify({ error: "Failed to fetch user details" }),
+			{ status: apiRes.status }
+		);
 	}
 
 	const data = await apiRes.json();
-	res.status(200).json(data);
+	return new Response(JSON.stringify(data), { status: 200 });
 }
