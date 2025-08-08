@@ -59,6 +59,7 @@ npm run dev
 - 🛠 **Customizable Tables:** Show/hide columns, reorder columns via drag-and-drop.
 - 🌗 **Light/Dark Mode:** Toggle between light and dark themes.
 - 📖 **In-App User Guide:** Always up-to-date help, loaded from a Markdown file.
+- 🆘 **Contact Support:** Open a support modal from anywhere in the app to get help or report issues.
 - ⚡ **Responsive & Fast:** Works great on desktop and mobile.
 
 ---

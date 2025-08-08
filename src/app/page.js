@@ -6,6 +6,7 @@ import OrdersPage from "../components/OrdersPage";
 import ReturnsPage from "../components/ReturnsPage";
 import SearchBar from "../components/SearchBar";
 import UserGuideModal from "../components/UserGuideModal";
+import SupportModal from "../components/SupportModal";
 
 // Theme toggle component
 function ThemeToggle() {
@@ -54,6 +55,7 @@ export default function Home() {
 	const [error, setError] = useState(null); // Error message
 	const [page, setPage] = useState("customers"); // Current page/tab
 	const [showGuide, setShowGuide] = useState(false); // User guide modal state
+	const [showSupport, setShowSupport] = useState(false); // Support modal state
 
 	// Fetch all data on mount
 	useEffect(() => {
@@ -152,6 +154,11 @@ export default function Home() {
 					<button className="btn btn-ghost" onClick={() => setShowGuide(true)}>
 						User Guide
 					</button>
+					<button
+						className="btn btn-ghost"
+						onClick={() => setShowSupport(true)}>
+						Contact Support
+					</button>
 					<ThemeToggle />
 				</div>
 			</div>
@@ -233,6 +240,7 @@ export default function Home() {
 				</>
 			)}
 			<UserGuideModal open={showGuide} onClose={() => setShowGuide(false)} />
+			<SupportModal open={showSupport} onClose={() => setShowSupport(false)} />
 		</div>
 	);
 }

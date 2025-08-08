@@ -106,4 +106,13 @@ A: Simply drag and drop the column headers to rearrange them as you like.
 
 ---
 
+## Contacting Support
+
+- **Contact Support:**  
+  You can open the support window from anywhere in the app by clicking the **Contact Support** button in the top toolbar.
+- The support window provides contact information (such as email and phone) for reaching the technical support team.
+- Please include a description of your issue and any error messages when contacting support.
+
+---
+
 For further assistance, contact your technical support team.
