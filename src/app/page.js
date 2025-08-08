@@ -132,9 +132,80 @@ export default function Home() {
 			r.reason?.toLowerCase().includes(searchLower)
 	);
 
+	// Calculate totals for the summary boxes
+	const totalCustomers = users.length;
+	const totalOrders = orders.length;
+	const totalReturns = returns.length;
+
 	return (
 		<div className="page">
-			<h1>Customer Service Dashboard</h1>
+			{/* Header and summary boxes inline, boxes aligned under h1 start */}
+			<div style={{ marginBottom: 24 }}>
+				<h1 style={{ margin: 0 }}>Customer Service Dashboard</h1>
+				<div
+					style={{
+						display: "flex",
+						gap: 24,
+						marginTop: 8,
+						marginLeft: 0, // aligns with h1 start
+					}}>
+					<div
+						style={{
+							background: "var(--card, #fff)",
+							color: "var(--text, #222)",
+							border: "1.5px solid var(--border, #222)",
+							borderRadius: 10,
+							padding: "24px 32px",
+							minWidth: 160,
+							textAlign: "center",
+							boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+							fontWeight: "bold",
+							fontSize: "1.2rem",
+						}}>
+						Customers
+						<div style={{ fontSize: "2.2rem", marginTop: 8, fontWeight: 800 }}>
+							{totalCustomers}
+						</div>
+					</div>
+					<div
+						style={{
+							background: "var(--card, #fff)",
+							color: "var(--text, #222)",
+							border: "1.5px solid var(--border, #222)",
+							borderRadius: 10,
+							padding: "24px 32px",
+							minWidth: 160,
+							textAlign: "center",
+							boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+							fontWeight: "bold",
+							fontSize: "1.2rem",
+						}}>
+						Orders
+						<div style={{ fontSize: "2.2rem", marginTop: 8, fontWeight: 800 }}>
+							{totalOrders}
+						</div>
+					</div>
+					<div
+						style={{
+							background: "var(--card, #fff)",
+							color: "var(--text, #222)",
+							border: "1.5px solid var(--border, #222)",
+							borderRadius: 10,
+							padding: "24px 32px",
+							minWidth: 160,
+							textAlign: "center",
+							boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+							fontWeight: "bold",
+							fontSize: "1.2rem",
+						}}>
+						Returns
+						<div style={{ fontSize: "2.2rem", marginTop: 8, fontWeight: 800 }}>
+							{totalReturns}
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div className="toolbar">
 				<div className="seg">
 					<button
