@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import CustomerDetailsModal from "./CustomerDetailsModal";
+import DataTable from "./DataTable";
 
 const ALL_COLUMNS = [
 	{ key: "id", label: "ID" },
@@ -213,79 +214,17 @@ export default function CustomerPage({
 				</div>
 			)}
 
-			<table
-				border="1"
-				cellPadding="8"
-				cellSpacing="0"
-				style={{
-					marginTop: 16,
-					width: "100%",
-					padding: "8px",
-					boxSizing: "border-box",
-					fontSize: "1rem",
-					border: "2px solid #555",
-					borderRadius: 8,
-				}}>
-				<thead>
-					<tr>
-						{ALL_COLUMNS.filter((col) => visibleColumns.includes(col.key)).map(
-							(col) => (
-								<th
-									key={col.key}
-									style={{
-										padding: "16px",
-										textAlign: "left",
-										cursor: "pointer",
-										userSelect: "none",
-										background: sortKey === col.key ? "#222" : "transparent",
-										color: "#fff",
-									}}
-									onClick={() => handleSort(col.key)}>
-									{col.label}
-									{sortKey === col.key && (
-										<span style={{ marginLeft: 4 }}>
-											{sortDirection === "asc" ? "▲" : "▼"}
-										</span>
-									)}
-								</th>
-							)
-						)}
-					</tr>
-				</thead>
-				<tbody>
-					{sortedUsers.map((user) => (
-						<tr
-							key={user.id}
-							style={{
-								border: "2px solid #333",
-								cursor: "pointer",
-								background:
-									selectedUser && selectedUser.id === user.id
-										? "#222"
-										: undefined,
-								transition: "background 0.2s",
-							}}
-							onClick={() => setSelectedUser(user)}
-							tabIndex={0}
-							onKeyDown={(e) => {
-								if (e.key === "Enter" || e.key === " ") setSelectedUser(user);
-							}}
-							onMouseEnter={(e) => (e.currentTarget.style.background = "#222")}
-							onMouseLeave={(e) =>
-								(e.currentTarget.style.background =
-									selectedUser && selectedUser.id === user.id ? "#222" : "")
-							}>
-							{ALL_COLUMNS.filter((col) =>
-								visibleColumns.includes(col.key)
-							).map((col) => (
-								<td key={col.key} style={{ padding: "16px" }}>
-									{user[col.key] || "N/A"}
-								</td>
-							))}
-						</tr>
-					))}
-				</tbody>
-			</table>
+			<DataTable
+				data={sortedUsers}
+				columns={ALL_COLUMNS}
+				visibleColumns={visibleColumns}
+				sortKey={sortKey}
+				sortDirection={sortDirection}
+				onSort={handleSort}
+				onRowClick={setSelectedUser}
+				selectedRow={selectedUser}
+			/>
+
 			{selectedUser && (
 				<CustomerDetailsModal
 					user={selectedUser}

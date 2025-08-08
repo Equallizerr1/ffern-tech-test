@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
+import DataTable from "./DataTable";
 
 const ALL_ORDER_COLUMNS = [
 	{ key: "id", label: "Order ID" },
@@ -282,97 +283,17 @@ export default function OrdersPage({
 			)}
 
 			{/* table and pagination (always visible) */}
-			<table
-				border="1"
-				cellPadding="8"
-				cellSpacing="0"
-				style={{
-					marginTop: 16,
-					width: "100%",
-					padding: "8px",
-					boxSizing: "border-box",
-					fontSize: "1rem",
-					border: "2px solid #555",
-					borderRadius: 8,
-				}}>
-				<thead>
-					<tr>
-						{ALL_ORDER_COLUMNS.filter((col) =>
-							visibleColumns.includes(col.key)
-						).map((col) => (
-							<th
-								key={col.key}
-								style={{
-									padding: "16px",
-									textAlign: "left",
-									cursor: "pointer",
-									userSelect: "none",
-									background: sortKey === col.key ? "#222" : "transparent",
-									color: "#fff",
-								}}
-								onClick={() => handleSort(col.key)}>
-								{col.label}
-								{sortKey === col.key && (
-									<span style={{ marginLeft: 4 }}>
-										{sortDirection === "asc" ? "▲" : "▼"}
-									</span>
-								)}
-							</th>
-						))}
-						<th style={{ padding: "16px", textAlign: "left" }}>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					{paginatedOrders.map((order) => {
-						const user = users.find((u) => u.id === order.user_id);
-						return (
-							<tr
-								style={{
-									border: "2px solid #333",
-									cursor: "pointer",
-									background:
-										selectedOrder && selectedOrder.id === order.id
-											? "#222"
-											: undefined,
-									...rowHoverStyle,
-								}}
-								key={order.id}
-								onClick={() => setSelectedOrder(order)}
-								tabIndex={0}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" || e.key === " ")
-										setSelectedOrder(order);
-								}}
-								onMouseEnter={(e) =>
-									(e.currentTarget.style.background = "#222")
-								}
-								onMouseLeave={(e) =>
-									(e.currentTarget.style.background =
-										selectedOrder && selectedOrder.id === order.id
-											? "#222"
-											: "")
-								}>
-								{ALL_ORDER_COLUMNS.filter((col) =>
-									visibleColumns.includes(col.key)
-								).map((col) => (
-									<td key={col.key} style={{ padding: "16px" }}>
-										{col.key === "customer_name"
-											? user
-												? `${user.first_name} ${user.last_name}`
-												: "Unknown User"
-											: order[col.key] ||
-											  (col.key === "user_id"
-													? user
-														? `${user.first_name} ${user.last_name}`
-														: "Unknown User"
-													: "N/A")}
-									</td>
-								))}
-							</tr>
-						);
-					})}
-				</tbody>
-			</table>
+			<DataTable
+				data={sortedOrders}
+				columns={ALL_ORDER_COLUMNS}
+				visibleColumns={visibleColumns}
+				sortKey={sortKey}
+				sortDirection={sortDirection}
+				onSort={handleSort}
+				onRowClick={setSelectedOrder}
+				selectedRow={selectedOrder}
+			/>
+
 			{/* Pagination Controls */}
 			<div
 				style={{
