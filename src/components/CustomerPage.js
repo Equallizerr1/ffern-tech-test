@@ -3,7 +3,6 @@ import OrderDetailsModal from "./OrderDetailsModal";
 import CustomerDetailsModal from "./CustomerDetailsModal";
 import DataTable from "./DataTable";
 import SettingsModal from "./SettingsModal";
-import SettingsButton from "./SettingsButton";
 
 // Define all possible columns for the customers table
 const ALL_COLUMNS = [
@@ -111,7 +110,7 @@ export default function CustomerPage({
 
 	return (
 		<>
-			{/* Page header and settings button */}
+			{/* Page header */}
 			<div
 				style={{
 					display: "flex",
@@ -121,8 +120,6 @@ export default function CustomerPage({
 				<h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
 					Customers Page
 				</h1>
-				{/* Button to open settings modal */}
-				<SettingsButton onClick={() => setShowSettings(true)} />
 			</div>
 
 			{/* Settings modal for choosing visible columns */}
@@ -150,6 +147,7 @@ export default function CustomerPage({
 				currentPage={currentPage}
 				rowsPerPage={rowsPerPage}
 				onPageChange={handlePageChange}
+				onShowSettings={() => setShowSettings(true)} // Pass handler to DataTable
 			/>
 
 			{/* Modal for detailed customer info */}

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import DataTable from "./DataTable";
 import ReturnDetailsModal from "./ReturnDetailsModal";
 import SettingsModal from "./SettingsModal";
-import SettingsButton from "./SettingsButton";
 
 // Define all possible columns for the returns table
 const ALL_RETURN_COLUMNS = [
@@ -111,7 +110,7 @@ export default function ReturnsPage({
 
 	return (
 		<div>
-			{/* Page header and settings button */}
+			{/* Page header */}
 			<div
 				style={{
 					display: "flex",
@@ -119,8 +118,6 @@ export default function ReturnsPage({
 					alignItems: "center",
 				}}>
 				<h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>Returns Page</h1>
-				{/* Button to open settings modal */}
-				<SettingsButton onClick={() => setShowSettings(true)} />
 			</div>
 			{/* Settings modal for choosing visible columns */}
 			<SettingsModal
@@ -139,6 +136,7 @@ export default function ReturnsPage({
 				columns={ALL_RETURN_COLUMNS}
 				visibleColumns={visibleColumns}
 				onRowClick={(row) => setSelectedReturn(row)}
+				onShowSettings={() => setShowSettings(true)} // Pass handler to DataTable
 			/>
 			{/* Modal for detailed return info */}
 			{selectedReturn && (

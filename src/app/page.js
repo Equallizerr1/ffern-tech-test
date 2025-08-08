@@ -5,6 +5,7 @@ import CustomerPage from "../components/CustomerPage";
 import OrdersPage from "../components/OrdersPage";
 import ReturnsPage from "../components/ReturnsPage";
 import SearchBar from "../components/SearchBar";
+import UserGuideModal from "../components/UserGuideModal"; // Make sure this file exists
 
 // Main dashboard component for the Customer Service app
 export default function Home() {
@@ -25,6 +26,7 @@ export default function Home() {
 	const [loading, setLoading] = useState(false); // Loading indicator
 	const [error, setError] = useState(null); // Error message
 	const [page, setPage] = useState("customers"); // Current page/tab
+	const [showGuide, setShowGuide] = useState(false); // User guide modal state
 
 	// Fetch all data on mount
 	useEffect(() => {
@@ -103,12 +105,62 @@ export default function Home() {
 		<div>
 			{/* Main dashboard title */}
 			<h1 style={{ fontSize: "2.5rem" }}>Customer Service Dashboard</h1>
-			{/* Navigation buttons for switching between pages */}
-			<div style={{ marginBottom: 12 }}>
+			{/* Navigation buttons and User Guide button in a single row */}
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "space-between",
+					alignItems: "center",
+					marginBottom: 12,
+				}}>
+				<div>
+					<button
+						onClick={() => setPage("customers")}
+						style={{
+							marginRight: 8,
+							border: "2px solid #222",
+							borderRadius: 4,
+							padding: "4px 12px",
+							background: "#fff",
+							color: "#222",
+							cursor: "pointer",
+							outline: "2px solid #222",
+							fontWeight: "bold",
+						}}>
+						Customers
+					</button>
+					<button
+						onClick={() => setPage("orders")}
+						style={{
+							border: "2px solid #222",
+							borderRadius: 4,
+							padding: "4px 12px",
+							background: "#fff",
+							color: "#222",
+							cursor: "pointer",
+							outline: "2px solid #222",
+							fontWeight: "bold",
+						}}>
+						Orders
+					</button>
+					<button
+						onClick={() => setPage("returns")}
+						style={{
+							border: "2px solid #222",
+							borderRadius: 4,
+							padding: "4px 12px",
+							background: "#fff",
+							color: "#222",
+							cursor: "pointer",
+							outline: "2px solid #222",
+							fontWeight: "bold",
+							marginLeft: 8,
+						}}>
+						Returns
+					</button>
+				</div>
 				<button
-					onClick={() => setPage("customers")}
 					style={{
-						marginRight: 8,
 						border: "2px solid #222",
 						borderRadius: 4,
 						padding: "4px 12px",
@@ -117,39 +169,14 @@ export default function Home() {
 						cursor: "pointer",
 						outline: "2px solid #222",
 						fontWeight: "bold",
-					}}>
-					Customers
-				</button>
-				<button
-					onClick={() => setPage("orders")}
-					style={{
-						border: "2px solid #222",
-						borderRadius: 4,
-						padding: "4px 12px",
-						background: "#fff",
-						color: "#222",
-						cursor: "pointer",
-						outline: "2px solid #222",
-						fontWeight: "bold",
-					}}>
-					Orders
-				</button>
-				<button
-					onClick={() => setPage("returns")}
-					style={{
-						border: "2px solid #222",
-						borderRadius: 4,
-						padding: "4px 12px",
-						background: "#fff",
-						color: "#222",
-						cursor: "pointer",
-						outline: "2px solid #222",
-						fontWeight: "bold",
-						marginLeft: 8,
-					}}>
-					Returns
+						marginRight: 120,
+					}}
+					onClick={() => setShowGuide(true)}>
+					User Guide
 				</button>
 			</div>
+			<UserGuideModal open={showGuide} onClose={() => setShowGuide(false)} />
+
 			{/* Search bar for filtering users, orders, or returns */}
 			<SearchBar
 				value={search}
@@ -219,6 +246,7 @@ export default function Home() {
 							exchanges={exchanges}
 							exchangeLineItems={exchangeLineItems}
 							orderLineItems={orderLineItems}
+							search={search}
 						/>
 					)}
 				</>

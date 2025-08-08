@@ -1,6 +1,7 @@
 import React from "react";
+import SettingsButton from "./SettingsButton";
 
-// Generic data table component with sorting, pagination, and row selection
+// Generic data table component with sorting, pagination, row selection, and settings
 export default function DataTable({
 	data,
 	columns,
@@ -15,6 +16,7 @@ export default function DataTable({
 	onPageChange,
 	getRowKey = (row) => row.id,
 	rowHighlight = (row) => selectedRow && selectedRow.id === row.id,
+	onShowSettings, // <-- Add this prop to trigger settings modal
 }) {
 	const totalPages = Math.ceil(data.length / rowsPerPage);
 	const paginatedData = data.slice(
@@ -24,13 +26,24 @@ export default function DataTable({
 
 	return (
 		<>
+			{/* Table header row with settings button */}
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "space-between",
+					alignItems: "center",
+					marginTop: 16,
+				}}>
+				<div style={{ fontWeight: "bold", fontSize: "1.1rem" }}>Table</div>
+				{onShowSettings && <SettingsButton onClick={onShowSettings} />}
+			</div>
 			{/* Main table */}
 			<table
 				border="1"
 				cellPadding="8"
 				cellSpacing="0"
 				style={{
-					marginTop: 16,
+					marginTop: 8,
 					width: "100%",
 					padding: "8px",
 					boxSizing: "border-box",

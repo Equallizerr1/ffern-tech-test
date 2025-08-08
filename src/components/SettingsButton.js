@@ -14,6 +14,7 @@ export default function SettingsButton({ onClick }) {
 				outline: "2px solid #222",
 				fontWeight: "bold",
 				marginLeft: 8,
+				marginRight: 16,
 			}}
 			onClick={onClick}>
 			Settings

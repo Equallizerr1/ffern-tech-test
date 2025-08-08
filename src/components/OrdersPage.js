@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import DataTable from "./DataTable";
 import SettingsModal from "./SettingsModal";
-import SettingsButton from "./SettingsButton";
 
 // Define all possible columns for the orders table
 const ALL_ORDER_COLUMNS = [
@@ -156,7 +155,7 @@ export default function OrdersPage({
 
 	return (
 		<>
-			{/* Page header and settings button */}
+			{/* Page header */}
 			<div
 				style={{
 					display: "flex",
@@ -164,7 +163,6 @@ export default function OrdersPage({
 					alignItems: "center",
 				}}>
 				<h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>Orders Page</h1>
-				<SettingsButton onClick={() => setShowSettings(true)} />
 			</div>
 
 			{/* Settings Modal for choosing visible columns */}
@@ -193,6 +191,7 @@ export default function OrdersPage({
 				currentPage={currentPage}
 				rowsPerPage={rowsPerPage}
 				onPageChange={handlePageChange}
+				onShowSettings={() => setShowSettings(true)} // Pass handler to DataTable
 			/>
 
 			{/* Modal for detailed order info */}
