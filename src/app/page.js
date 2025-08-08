@@ -28,9 +28,12 @@ export default function Home() {
 
 	// Fetch all data on mount
 	useEffect(() => {
+		let isMounted = true;
 		setLoading(true);
+		setError(null);
 		fetchUserDetails()
 			.then((data) => {
+				if (!isMounted) return;
 				// Populate state with fetched data or empty arrays if missing
 				setUsers(data.users || []);
 				setOrders(data.orders || []);
@@ -42,8 +45,20 @@ export default function Home() {
 				setExchangeLineItems(data.exchangeLineItems || []);
 				setError(null);
 			})
-			.catch((err) => setError(err.message))
-			.finally(() => setLoading(false));
+			.catch((err) => {
+				if (!isMounted) return;
+				setError(
+					err?.message
+						? `Failed to load data: ${err.message}`
+						: "Failed to load data. Please try again."
+				);
+			})
+			.finally(() => {
+				if (isMounted) setLoading(false);
+			});
+		return () => {
+			isMounted = false;
+		};
 	}, []);
 
 	// --- Filtering logic for search ---
@@ -143,43 +158,70 @@ export default function Home() {
 				style={{ marginBottom: "1rem" }}
 			/>
 			{/* Loading and error states */}
-			{loading && <p>Loading...</p>}
-			{error && <p style={{ color: "red" }}>{error}</p>}
-			{/* Render the selected page/component */}
-			{page === "customers" && (
-				<CustomerPage
-					users={filteredUsers}
-					orders={orders}
-					ledgerMemberships={ledgerMemberships}
-					orderLineItems={orderLineItems}
-					selectedUser={selectedUser}
-					setSelectedUser={setSelectedUser}
-					selectedOrder={selectedOrder}
-					setSelectedOrder={setSelectedOrder}
-					search={search}
-					setSearch={setSearch}
-				/>
+			{loading && (
+				<div style={{ margin: "2rem 0", textAlign: "center" }}>
+					<p style={{ fontSize: "1.2rem" }}>Loading data, please wait...</p>
+				</div>
 			)}
-			{page === "orders" && (
-				<OrdersPage
-					orders={filteredOrders}
-					users={users}
-					selectedOrder={selectedOrder}
-					setSelectedOrder={setSelectedOrder}
-					orderLineItems={orderLineItems}
-					search={search}
-					setSearch={setSearch}
-				/>
+			{error && (
+				<div style={{ margin: "2rem 0", textAlign: "center", color: "red" }}>
+					<p style={{ fontWeight: "bold" }}>{error}</p>
+					<button
+						onClick={() => window.location.reload()}
+						style={{
+							marginTop: 8,
+							border: "2px solid #222",
+							borderRadius: 4,
+							padding: "4px 12px",
+							background: "#fff",
+							color: "#222",
+							cursor: "pointer",
+							outline: "2px solid #222",
+							fontWeight: "bold",
+						}}>
+						Retry
+					</button>
+				</div>
 			)}
-			{page === "returns" && (
-				<ReturnsPage
-					returns={filteredReturns}
-					users={users}
-					reverseShipments={reverseShipments}
-					exchanges={exchanges}
-					exchangeLineItems={exchangeLineItems}
-					orderLineItems={orderLineItems}
-				/>
+			{/* Render the selected page/component only if not loading or error */}
+			{!loading && !error && (
+				<>
+					{page === "customers" && (
+						<CustomerPage
+							users={filteredUsers}
+							orders={orders}
+							ledgerMemberships={ledgerMemberships}
+							orderLineItems={orderLineItems}
+							selectedUser={selectedUser}
+							setSelectedUser={setSelectedUser}
+							selectedOrder={selectedOrder}
+							setSelectedOrder={setSelectedOrder}
+							search={search}
+							setSearch={setSearch}
+						/>
+					)}
+					{page === "orders" && (
+						<OrdersPage
+							orders={filteredOrders}
+							users={users}
+							selectedOrder={selectedOrder}
+							setSelectedOrder={setSelectedOrder}
+							orderLineItems={orderLineItems}
+							search={search}
+							setSearch={setSearch}
+						/>
+					)}
+					{page === "returns" && (
+						<ReturnsPage
+							returns={filteredReturns}
+							users={users}
+							reverseShipments={reverseShipments}
+							exchanges={exchanges}
+							exchangeLineItems={exchangeLineItems}
+							orderLineItems={orderLineItems}
+						/>
+					)}
+				</>
 			)}
 		</div>
 	);
