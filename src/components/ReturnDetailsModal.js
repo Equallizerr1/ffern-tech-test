@@ -1,5 +1,6 @@
 import React from "react";
 
+// Modal to display detailed information about a return, including shipments and exchanges
 export default function ReturnDetailsModal({
 	returnOrder,
 	reverseShipments,
@@ -48,6 +49,7 @@ export default function ReturnDetailsModal({
 					position: "relative",
 				}}
 				onClick={(e) => e.stopPropagation()}>
+				{/* Close button */}
 				<button
 					style={{
 						position: "absolute",
@@ -66,6 +68,7 @@ export default function ReturnDetailsModal({
 					Close
 				</button>
 				<h2 style={{ marginTop: 12, fontSize: "1.5rem" }}>Return Details</h2>
+				{/* Basic return info */}
 				<p>
 					Return ID: <b>{returnOrder.id}</b>
 				</p>
@@ -95,6 +98,7 @@ export default function ReturnDetailsModal({
 				<p>
 					Credit Issued: <b>{returnOrder.credit_issued ? "Yes" : "No"}</b>
 				</p>
+				{/* Reverse Shipments section */}
 				<h3 style={{ marginTop: 24, fontSize: "1.2rem", fontWeight: "bold" }}>
 					Reverse Shipments
 				</h3>
@@ -186,6 +190,7 @@ export default function ReturnDetailsModal({
 					))}
 				</ul>
 
+				{/* Exchanges section */}
 				<h3 style={{ marginTop: 24, fontSize: "1.2rem", fontWeight: "bold" }}>
 					Exchanges
 				</h3>

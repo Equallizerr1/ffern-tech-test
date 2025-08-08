@@ -5,6 +5,7 @@ import DataTable from "./DataTable";
 import SettingsModal from "./SettingsModal";
 import SettingsButton from "./SettingsButton";
 
+// Define all possible columns for the customers table
 const ALL_COLUMNS = [
 	{ key: "id", label: "ID" },
 	{ key: "created_at", label: "Created At" },
@@ -32,8 +33,10 @@ const ALL_COLUMNS = [
 	{ key: "anon_id", label: "Anon ID" },
 ];
 
+// Default columns to show in the table
 const DEFAULT_COLUMNS = ["first_name", "last_name", "email", "user_uuid"];
 
+// Main Customers Page component
 export default function CustomerPage({
 	users,
 	orders,
@@ -45,13 +48,15 @@ export default function CustomerPage({
 	setSelectedOrder,
 	search,
 }) {
-	const [showSettings, setShowSettings] = useState(false);
-	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
-	const [sortKey, setSortKey] = useState(null);
-	const [sortDirection, setSortDirection] = useState("asc");
-	const [currentPage, setCurrentPage] = useState(1);
-	const rowsPerPage = 20; // Change this value for more/less rows per page
+	// State for modal and column settings
+	const [showSettings, setShowSettings] = useState(false); // Show/hide settings modal
+	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS); // Columns to display
+	const [sortKey, setSortKey] = useState(null); // Current sort column
+	const [sortDirection, setSortDirection] = useState("asc"); // Sort direction
+	const [currentPage, setCurrentPage] = useState(1); // Current page for pagination
+	const rowsPerPage = 20; // Number of rows per page
 
+	// Filter users based on search input
 	const filteredUsers = users.filter(
 		(user) =>
 			user.email?.toLowerCase().includes(search.toLowerCase()) ||
@@ -60,6 +65,7 @@ export default function CustomerPage({
 			user.user_uuid?.toLowerCase().includes(search.toLowerCase())
 	);
 
+	// Sort users by selected column and direction
 	const sortedUsers = React.useMemo(() => {
 		if (!sortKey) return filteredUsers;
 		const sorted = [...filteredUsers].sort((a, b) => {
@@ -75,12 +81,16 @@ export default function CustomerPage({
 		return sorted;
 	}, [filteredUsers, sortKey, sortDirection]);
 
+	// Toggle column visibility in settings modal
 	const handleColumnToggle = (key) => {
 		setVisibleColumns((cols) =>
 			cols.includes(key) ? cols.filter((col) => col !== key) : [...cols, key]
 		);
 	};
+
+	// Handle page change for pagination
 	const handlePageChange = (page) => {
+		const totalPages = Math.ceil(sortedUsers.length / rowsPerPage);
 		if (page >= 1 && page <= totalPages) setCurrentPage(page);
 	};
 
@@ -89,6 +99,7 @@ export default function CustomerPage({
 		setCurrentPage(1);
 	}, [search, sortKey, sortDirection, visibleColumns]);
 
+	// Handle sorting when a column header is clicked
 	const handleSort = (key) => {
 		if (sortKey === key) {
 			setSortDirection((dir) => (dir === "asc" ? "desc" : "asc"));
@@ -100,6 +111,7 @@ export default function CustomerPage({
 
 	return (
 		<>
+			{/* Page header and settings button */}
 			<div
 				style={{
 					display: "flex",
@@ -109,9 +121,11 @@ export default function CustomerPage({
 				<h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
 					Customers Page
 				</h1>
+				{/* Button to open settings modal */}
 				<SettingsButton onClick={() => setShowSettings(true)} />
 			</div>
 
+			{/* Settings modal for choosing visible columns */}
 			<SettingsModal
 				open={showSettings}
 				onClose={() => setShowSettings(false)}
@@ -123,6 +137,7 @@ export default function CustomerPage({
 				defaultColumns={DEFAULT_COLUMNS}
 			/>
 
+			{/* Main data table */}
 			<DataTable
 				data={sortedUsers}
 				columns={ALL_COLUMNS}
@@ -137,6 +152,7 @@ export default function CustomerPage({
 				onPageChange={handlePageChange}
 			/>
 
+			{/* Modal for detailed customer info */}
 			{selectedUser && (
 				<CustomerDetailsModal
 					user={selectedUser}
@@ -148,6 +164,7 @@ export default function CustomerPage({
 					onClose={() => setSelectedUser(null)}
 				/>
 			)}
+			{/* Modal for detailed order info */}
 			{selectedOrder && (
 				<OrderDetailsModal
 					order={selectedOrder}

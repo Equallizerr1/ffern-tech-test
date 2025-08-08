@@ -1,5 +1,6 @@
 import React from "react";
 
+// Modal for selecting which columns to display in a table
 export default function SettingsModal({
 	open,
 	onClose,
@@ -41,6 +42,7 @@ export default function SettingsModal({
 					overflowY: "auto",
 				}}>
 				<h3 style={{ fontWeight: "bold" }}>{title}</h3>
+				{/* List of all columns with checkboxes */}
 				<div
 					style={{
 						display: "grid",
@@ -61,6 +63,7 @@ export default function SettingsModal({
 						</div>
 					))}
 				</div>
+				{/* Action buttons for clearing, resetting, or closing */}
 				<div
 					style={{
 						display: "flex",

@@ -1,3 +1,4 @@
+// Fetches user details and related data from the backend API
 export async function fetchUserDetails() {
 	const username = "cs-tech-test";
 	const password = "mypasswordissecure";

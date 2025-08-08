@@ -1,5 +1,6 @@
 import React from "react";
 
+// Modal to display detailed information about a customer/user
 export default function CustomerDetailsModal({
 	user,
 	orders,
@@ -38,6 +39,7 @@ export default function CustomerDetailsModal({
 					position: "relative",
 				}}
 				onClick={(e) => e.stopPropagation()}>
+				{/* Close button */}
 				<button
 					style={{
 						position: "absolute",

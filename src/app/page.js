@@ -6,7 +6,9 @@ import OrdersPage from "../components/OrdersPage";
 import ReturnsPage from "../components/ReturnsPage";
 import SearchBar from "../components/SearchBar";
 
+// Main dashboard component for the Customer Service app
 export default function Home() {
+	// State for all data entities
 	const [users, setUsers] = useState([]);
 	const [orders, setOrders] = useState([]);
 	const [orderLineItems, setOrderLineItems] = useState([]);
@@ -15,17 +17,21 @@ export default function Home() {
 	const [reverseShipments, setReverseShipments] = useState([]);
 	const [exchanges, setExchanges] = useState([]);
 	const [exchangeLineItems, setExchangeLineItems] = useState([]);
-	const [search, setSearch] = useState("");
-	const [selectedUser, setSelectedUser] = useState(null);
-	const [selectedOrder, setSelectedOrder] = useState(null);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
-	const [page, setPage] = useState("customers");
 
+	// UI state
+	const [search, setSearch] = useState(""); // Search input value
+	const [selectedUser, setSelectedUser] = useState(null); // Currently selected user for modal/details
+	const [selectedOrder, setSelectedOrder] = useState(null); // Currently selected order for modal/details
+	const [loading, setLoading] = useState(false); // Loading indicator
+	const [error, setError] = useState(null); // Error message
+	const [page, setPage] = useState("customers"); // Current page/tab
+
+	// Fetch all data on mount
 	useEffect(() => {
 		setLoading(true);
 		fetchUserDetails()
 			.then((data) => {
+				// Populate state with fetched data or empty arrays if missing
 				setUsers(data.users || []);
 				setOrders(data.orders || []);
 				setLedgerMemberships(data.ledgerMemberships || []);
@@ -40,9 +46,11 @@ export default function Home() {
 			.finally(() => setLoading(false));
 	}, []);
 
-	// Filtering logic
+	// --- Filtering logic for search ---
+
 	const searchLower = search.toLowerCase();
 
+	// Filter users by name, email, or UUID
 	const filteredUsers = users.filter(
 		(u) =>
 			u.first_name?.toLowerCase().includes(searchLower) ||
@@ -51,6 +59,7 @@ export default function Home() {
 			u.user_uuid?.toLowerCase().includes(searchLower)
 	);
 
+	// Filter orders by order fields or associated user fields
 	const filteredOrders = orders.filter((o) => {
 		const user = users.find((u) => u.id === o.user_id);
 		return (
@@ -66,6 +75,7 @@ export default function Home() {
 		);
 	});
 
+	// Filter returns by ID, user, status, or reason
 	const filteredReturns = returns.filter(
 		(r) =>
 			r.id?.toString().includes(searchLower) ||
@@ -76,7 +86,9 @@ export default function Home() {
 
 	return (
 		<div>
+			{/* Main dashboard title */}
 			<h1 style={{ fontSize: "2.5rem" }}>Customer Service Dashboard</h1>
+			{/* Navigation buttons for switching between pages */}
 			<div style={{ marginBottom: 12 }}>
 				<button
 					onClick={() => setPage("customers")}
@@ -123,14 +135,17 @@ export default function Home() {
 					Returns
 				</button>
 			</div>
+			{/* Search bar for filtering users, orders, or returns */}
 			<SearchBar
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 				placeholder="Search an order, user, or return"
 				style={{ marginBottom: "1rem" }}
 			/>
+			{/* Loading and error states */}
 			{loading && <p>Loading...</p>}
 			{error && <p style={{ color: "red" }}>{error}</p>}
+			{/* Render the selected page/component */}
 			{page === "customers" && (
 				<CustomerPage
 					users={filteredUsers}

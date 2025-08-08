@@ -1,5 +1,6 @@
 import React from "react";
 
+// Reusable search bar component for filtering data
 export default function SearchBar({
 	value,
 	onChange,
@@ -16,6 +17,7 @@ export default function SearchBar({
 				alignItems: "center",
 				...style,
 			}}>
+			{/* Search input field */}
 			<input
 				type="text"
 				placeholder={placeholder}
@@ -32,6 +34,7 @@ export default function SearchBar({
 					...inputStyle,
 				}}
 			/>
+			{/* Optional buttons (e.g., clear, advanced search) */}
 			{buttons}
 		</div>
 	);

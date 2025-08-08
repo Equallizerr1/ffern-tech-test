@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import DataTable from "./DataTable";
 import ReturnDetailsModal from "./ReturnDetailsModal";
-import SettingsModal from "./SettingsModal"; // <-- Import the SettingsModal
+import SettingsModal from "./SettingsModal";
 import SettingsButton from "./SettingsButton";
 
+// Define all possible columns for the returns table
 const ALL_RETURN_COLUMNS = [
 	{ key: "id", label: "Return ID" },
 	{ key: "customer", label: "Customer" },
@@ -14,6 +15,7 @@ const ALL_RETURN_COLUMNS = [
 	{ key: "replacement_item", label: "Replacement Item" },
 ];
 
+// Default columns to show in the table
 const DEFAULT_RETURN_COLUMNS = [
 	"id",
 	"customer",
@@ -24,29 +26,33 @@ const DEFAULT_RETURN_COLUMNS = [
 	"replacement_item",
 ];
 
+// Main Returns Page component
 export default function ReturnsPage({
 	returns,
+	users,
 	reverseShipments,
 	exchanges,
 	exchangeLineItems,
 	orderLineItems,
 }) {
-	const [selectedReturn, setSelectedReturn] = useState(null);
-	const [showSettings, setShowSettings] = useState(false);
-	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_RETURN_COLUMNS);
+	// State for modal and column settings
+	const [selectedReturn, setSelectedReturn] = useState(null); // Currently selected return for modal
+	const [showSettings, setShowSettings] = useState(false); // Show/hide settings modal
+	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_RETURN_COLUMNS); // Columns to display
 
+	// Toggle column visibility in settings modal
 	const handleColumnToggle = (key) => {
 		setVisibleColumns((cols) =>
 			cols.includes(key) ? cols.filter((col) => col !== key) : [...cols, key]
 		);
 	};
 
+	// Prepare table data by combining returns, shipments, exchanges, and exchange line items
 	const tableData = returns.map((r) => {
 		// Find all reverse shipments for this return
 		const shipments = reverseShipments.filter((rs) => rs.return_id === r.id);
 		// Find all exchanges for this return
 		const relatedExchanges = exchanges.filter((e) => e.return_id === r.id);
-
 		// Get all exchange IDs for this return
 		const relatedExchangeIds = relatedExchanges.map((e) => e.id);
 
@@ -60,11 +66,13 @@ export default function ReturnsPage({
 				</div>
 			));
 
+		// Get customer name from first shipment, or fallback to user_id
 		const customer =
 			shipments.length && shipments[0].sender_name
 				? shipments[0].sender_name
 				: r.user_id || "Unknown";
 
+		// Build exchange tracking info for display
 		const exchangeTracking = shipments.length
 			? shipments.map((shipment, idx) => [
 					shipment.tracking_number && (
@@ -90,6 +98,7 @@ export default function ReturnsPage({
 			  ])
 			: "N/A";
 
+		// Return a single object for the table row
 		return {
 			...r,
 			customer,
@@ -102,6 +111,7 @@ export default function ReturnsPage({
 
 	return (
 		<div>
+			{/* Page header and settings button */}
 			<div
 				style={{
 					display: "flex",
@@ -109,8 +119,10 @@ export default function ReturnsPage({
 					alignItems: "center",
 				}}>
 				<h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>Returns Page</h1>
+				{/* Button to open settings modal */}
 				<SettingsButton onClick={() => setShowSettings(true)} />
 			</div>
+			{/* Settings modal for choosing visible columns */}
 			<SettingsModal
 				open={showSettings}
 				onClose={() => setShowSettings(false)}
@@ -121,13 +133,14 @@ export default function ReturnsPage({
 				onResetDefault={() => setVisibleColumns(DEFAULT_RETURN_COLUMNS)}
 				defaultColumns={DEFAULT_RETURN_COLUMNS}
 			/>
+			{/* Main data table */}
 			<DataTable
 				data={tableData}
 				columns={ALL_RETURN_COLUMNS}
 				visibleColumns={visibleColumns}
 				onRowClick={(row) => setSelectedReturn(row)}
-				// ...other props
 			/>
+			{/* Modal for detailed return info */}
 			{selectedReturn && (
 				<ReturnDetailsModal
 					returnOrder={selectedReturn}

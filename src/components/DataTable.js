@@ -1,5 +1,6 @@
 import React from "react";
 
+// Generic data table component with sorting, pagination, and row selection
 export default function DataTable({
 	data,
 	columns,
@@ -23,6 +24,7 @@ export default function DataTable({
 
 	return (
 		<>
+			{/* Main table */}
 			<table
 				border="1"
 				cellPadding="8"

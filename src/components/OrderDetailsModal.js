@@ -1,5 +1,6 @@
 import React from "react";
 
+// Modal to display detailed information about an order, including customer and line items
 export default function OrderDetailsModal({
 	order,
 	users,
@@ -8,10 +9,13 @@ export default function OrderDetailsModal({
 }) {
 	if (!order) return null;
 
+	// Find the user associated with this order
 	const user = users.find((u) => u.id === order.user_id);
 
-	// Calculate the total price for the order:
+	// Get all line items for this order
 	const lineItems = orderLineItems.filter((item) => item.order_id === order.id);
+
+	// Calculate the total price for the order
 	const totalPrice = lineItems.reduce(
 		(sum, item) => sum + (item.price ? Number(item.price) : 0),
 		0
@@ -46,6 +50,7 @@ export default function OrderDetailsModal({
 					position: "relative",
 				}}
 				onClick={(e) => e.stopPropagation()}>
+				{/* Close button */}
 				<button
 					style={{
 						position: "absolute",
@@ -64,7 +69,7 @@ export default function OrderDetailsModal({
 					Close
 				</button>
 				<div style={{ display: "flex", gap: 32 }}>
-					{/* Order Details */}
+					{/* Order Details Section */}
 					<div style={{ minWidth: 320, flex: "0 0 320px" }}>
 						<h2 style={{ marginTop: 12, fontSize: "1.5rem" }}>Order Details</h2>
 						<p>
@@ -106,7 +111,7 @@ export default function OrderDetailsModal({
 							)}
 						</p>
 					</div>
-					{/* Customer Details */}
+					{/* Customer Details Section */}
 					<div style={{ minWidth: 320, flex: "0 0 320px" }}>
 						<h3 style={{ marginTop: 12, fontSize: "1.2rem" }}>Customer</h3>
 						{user ? (
@@ -122,15 +127,17 @@ export default function OrderDetailsModal({
 						)}
 					</div>
 				</div>
-				{/* Line Items below */}
+				{/* Order Line Items Section */}
 				<div>
 					<h3 style={{ marginTop: 24, fontSize: "1.2rem" }}>Order Items</h3>
 					<ul>
 						{lineItems.map((item) => (
 							<li key={item.id} style={{ marginBottom: 8 }}>
 								<>
+									{/* Product info and quantity */}
 									{item.product_id || "Unnamed Product"}{" "}
 									{item.quantity ? `x${item.quantity}` : ""}
+									{/* Unit price if available */}
 									{item.unit_price && <> - £{item.unit_price}</>}
 									<p>
 										Total:
@@ -140,6 +147,7 @@ export default function OrderDetailsModal({
 							</li>
 						))}
 					</ul>
+					{/* Order total price */}
 					<p style={{ fontWeight: "bold", marginTop: 12 }}>
 						Order Total: £{totalPrice}
 					</p>

@@ -4,6 +4,7 @@ import DataTable from "./DataTable";
 import SettingsModal from "./SettingsModal";
 import SettingsButton from "./SettingsButton";
 
+// Define all possible columns for the orders table
 const ALL_ORDER_COLUMNS = [
 	{ key: "id", label: "Order ID" },
 	{ key: "user_id", label: "User ID" },
@@ -48,6 +49,7 @@ const ALL_ORDER_COLUMNS = [
 	{ key: "shipping_address_id", label: "Shipping Address ID" },
 ];
 
+// Default columns to show in the table
 const DEFAULT_ORDER_COLUMNS = [
 	"id",
 	"user_id",
@@ -66,6 +68,7 @@ const DEFAULT_ORDER_COLUMNS = [
 	"fulfillment_service",
 ];
 
+// Main Orders Page component
 export default function OrdersPage({
 	orders,
 	users,
@@ -74,13 +77,14 @@ export default function OrdersPage({
 	orderLineItems,
 	search,
 }) {
-	const [showSettings, setShowSettings] = useState(false);
-	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_ORDER_COLUMNS);
-	const [sortKey, setSortKey] = useState(null);
-	const [sortDirection, setSortDirection] = useState("asc");
-	const [currentPage, setCurrentPage] = useState(1);
+	const [showSettings, setShowSettings] = useState(false); // Show/hide settings modal
+	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_ORDER_COLUMNS); // Columns to display
+	const [sortKey, setSortKey] = useState(null); // Current sort column
+	const [sortDirection, setSortDirection] = useState("asc"); // Sort direction
+	const [currentPage, setCurrentPage] = useState(1); // Current page for pagination
 	const rowsPerPage = 20; // Change this value for more/less rows per page
 
+	// Filter orders based on search input and user info
 	const filteredOrders = orders.filter((order) => {
 		const user = users.find((u) => u.id === order.user_id);
 		const userName = user ? `${user.first_name} ${user.last_name}` : "";
@@ -91,6 +95,7 @@ export default function OrdersPage({
 		);
 	});
 
+	// Sort orders by selected column and direction
 	const sortedOrders = React.useMemo(() => {
 		if (!sortKey) return filteredOrders;
 		const sorted = [...filteredOrders].sort((a, b) => {
@@ -109,12 +114,14 @@ export default function OrdersPage({
 	// Pagination logic
 	const totalPages = Math.ceil(sortedOrders.length / rowsPerPage);
 
+	// Toggle column visibility in settings modal
 	const handleColumnToggle = (key) => {
 		setVisibleColumns((cols) =>
 			cols.includes(key) ? cols.filter((col) => col !== key) : [...cols, key]
 		);
 	};
 
+	// Handle sorting when a column header is clicked
 	const handleSort = (key) => {
 		if (sortKey === key) {
 			setSortDirection((dir) => (dir === "asc" ? "desc" : "asc"));
@@ -124,6 +131,7 @@ export default function OrdersPage({
 		}
 	};
 
+	// Handle page change for pagination
 	const handlePageChange = (page) => {
 		if (page >= 1 && page <= totalPages) setCurrentPage(page);
 	};
@@ -133,6 +141,7 @@ export default function OrdersPage({
 		setCurrentPage(1);
 	}, [search, sortKey, sortDirection, visibleColumns]);
 
+	// Add customer name to each order for display
 	const ordersWithUser = sortedOrders.map((order) => {
 		const user = users.find((u) => u.id === order.user_id);
 		return {
@@ -147,6 +156,7 @@ export default function OrdersPage({
 
 	return (
 		<>
+			{/* Page header and settings button */}
 			<div
 				style={{
 					display: "flex",
@@ -157,7 +167,7 @@ export default function OrdersPage({
 				<SettingsButton onClick={() => setShowSettings(true)} />
 			</div>
 
-			{/* Settings Modal */}
+			{/* Settings Modal for choosing visible columns */}
 			<SettingsModal
 				open={showSettings}
 				onClose={() => setShowSettings(false)}
@@ -169,7 +179,7 @@ export default function OrdersPage({
 				defaultColumns={DEFAULT_ORDER_COLUMNS}
 			/>
 
-			{/* table and pagination (always visible) */}
+			{/* Main data table and pagination */}
 			<DataTable
 				data={ordersWithUser}
 				users={users}
@@ -185,6 +195,7 @@ export default function OrdersPage({
 				onPageChange={handlePageChange}
 			/>
 
+			{/* Modal for detailed order info */}
 			{selectedOrder && (
 				<OrderDetailsModal
 					order={selectedOrder}

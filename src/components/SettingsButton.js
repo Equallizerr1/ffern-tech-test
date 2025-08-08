@@ -1,5 +1,6 @@
 import React from "react";
 
+// Reusable button for opening settings/configuration modals
 export default function SettingsButton({ onClick }) {
 	return (
 		<button
