@@ -3,6 +3,7 @@ import SettingsButton from "./SettingsButton";
 
 // Generic data table component with sorting, pagination, row selection, settings, and draggable columns
 export default function DataTable({
+	tableType,
 	data,
 	columns,
 	visibleColumns,
@@ -143,7 +144,7 @@ export default function DataTable({
 		<>
 			{/* Header + settings */}
 			<div className="toolbar" style={{ marginTop: 8 }}>
-				<div style={{ fontWeight: 700 }}>Table</div>
+				<div style={{ fontWeight: 700 }}>{tableType}</div>
 				{onShowSettings && <SettingsButton onClick={onShowSettings} />}
 			</div>
 

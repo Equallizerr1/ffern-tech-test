@@ -1,43 +1,66 @@
 import React, { useState } from "react";
-import DataTable from "./DataTable";
 import ReturnDetailsModal from "./ReturnDetailsModal";
+import DataTable from "./DataTable";
 import SettingsModal from "./SettingsModal";
 
 // Define all possible columns for the returns table
-const ALL_RETURN_COLUMNS = [
+const ALL_COLUMNS = [
 	{ key: "id", label: "Return ID" },
-	{ key: "customer", label: "Customer" },
+	{ key: "order_id", label: "Order ID" },
+	{ key: "created_at", label: "Created At" },
 	{ key: "status", label: "Status" },
 	{ key: "reason", label: "Reason" },
-	{ key: "created_at", label: "Created" },
-	{ key: "exchange_tracking", label: "Exchange Tracking" },
-	{ key: "replacement_item", label: "Replacement Item" },
+	{ key: "refund_amount", label: "Refund Amount" },
+	{ key: "refund_status", label: "Refund Status" },
+	{ key: "credit_issued", label: "Credit Issued" },
+	{ key: "user_id", label: "User ID" },
+	// Add more columns as needed
 ];
 
 // Default columns to show in the table
-const DEFAULT_RETURN_COLUMNS = [
-	"id",
-	"customer",
-	"status",
-	"reason",
-	"created_at",
-	"exchange_tracking",
-	"replacement_item",
-];
+const DEFAULT_COLUMNS = ["id", "order_id", "created_at", "status", "reason"];
 
-// Main Returns Page component
 export default function ReturnsPage({
 	returns,
-	users,
 	reverseShipments,
 	exchanges,
 	exchangeLineItems,
 	orderLineItems,
+	selectedReturn,
+	setSelectedReturn,
+	search,
 }) {
-	// State for modal and column settings
-	const [selectedReturn, setSelectedReturn] = useState(null); // Currently selected return for modal
-	const [showSettings, setShowSettings] = useState(false); // Show/hide settings modal
-	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_RETURN_COLUMNS); // Columns to display
+	const [showSettings, setShowSettings] = useState(false);
+	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
+	const [sortKey, setSortKey] = useState(null);
+	const [sortDirection, setSortDirection] = useState("asc");
+	const [currentPage, setCurrentPage] = useState(1);
+	const rowsPerPage = 20;
+
+	// Filter returns based on search input
+	const filteredReturns = returns.filter(
+		(ret) =>
+			String(ret.id).includes(search) ||
+			String(ret.order_id).includes(search) ||
+			(ret.reason && ret.reason.toLowerCase().includes(search.toLowerCase())) ||
+			(ret.status && ret.status.toLowerCase().includes(search.toLowerCase()))
+	);
+
+	// Sort returns by selected column and direction
+	const sortedReturns = React.useMemo(() => {
+		if (!sortKey) return filteredReturns;
+		const sorted = [...filteredReturns].sort((a, b) => {
+			const aValue = a[sortKey] ?? "";
+			const bValue = b[sortKey] ?? "";
+			if (typeof aValue === "number" && typeof bValue === "number") {
+				return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+			}
+			return sortDirection === "asc"
+				? String(aValue).localeCompare(String(bValue))
+				: String(bValue).localeCompare(String(aValue));
+		});
+		return sorted;
+	}, [filteredReturns, sortKey, sortDirection]);
 
 	// Toggle column visibility in settings modal
 	const handleColumnToggle = (key) => {
@@ -46,70 +69,29 @@ export default function ReturnsPage({
 		);
 	};
 
-	// Prepare table data by combining returns, shipments, exchanges, and exchange line items
-	const tableData = returns.map((r) => {
-		// Find all reverse shipments for this return
-		const shipments = reverseShipments.filter((rs) => rs.return_id === r.id);
-		// Find all exchanges for this return
-		const relatedExchanges = exchanges.filter((e) => e.return_id === r.id);
-		// Get all exchange IDs for this return
-		const relatedExchangeIds = relatedExchanges.map((e) => e.id);
+	// Handle page change for pagination
+	const handlePageChange = (page) => {
+		const totalPages = Math.ceil(sortedReturns.length / rowsPerPage);
+		if (page >= 1 && page <= totalPages) setCurrentPage(page);
+	};
 
-		// Only show exchangeLineItems for exchanges belonging to this return
-		const replacementItems = exchangeLineItems
-			.filter((item) => relatedExchangeIds.includes(item.exchange_id))
-			.filter((item) => item.product_id)
-			.map((item, i) => (
-				<div key={`ship-repl-${i}`}>
-					<b>{item.product_id}</b>
-				</div>
-			));
+	// Reset to first page when search, sort, or filter changes
+	React.useEffect(() => {
+		setCurrentPage(1);
+	}, [search, sortKey, sortDirection, visibleColumns]);
 
-		// Get customer name from first shipment, or fallback to user_id
-		const customer =
-			shipments.length && shipments[0].sender_name
-				? shipments[0].sender_name
-				: r.user_id || "Unknown";
-
-		// Build exchange tracking info for display
-		const exchangeTracking = shipments.length
-			? shipments.map((shipment, idx) => [
-					shipment.tracking_number && (
-						<div key={`num-${idx}`}>
-							<b>{shipment.tracking_number}</b>
-						</div>
-					),
-					shipment.tracking_url && (
-						<div key={`url-${idx}`}>
-							<a
-								href={shipment.tracking_url}
-								target="_blank"
-								rel="noopener noreferrer"
-								style={{
-									color: "#0074d9",
-									textDecoration: "underline",
-									fontWeight: "bold",
-								}}>
-								Track
-							</a>
-						</div>
-					),
-			  ])
-			: "N/A";
-
-		// Return a single object for the table row
-		return {
-			...r,
-			customer,
-			exchange_tracking: exchangeTracking,
-			replacement_item: replacementItems,
-			status: r.status || "Pending",
-			created_at: new Date(r.created_at).toLocaleString(),
-		};
-	});
+	// Handle sorting when a column header is clicked
+	const handleSort = (key) => {
+		if (sortKey === key) {
+			setSortDirection((dir) => (dir === "asc" ? "desc" : "asc"));
+		} else {
+			setSortKey(key);
+			setSortDirection("asc");
+		}
+	};
 
 	return (
-		<div>
+		<>
 			{/* Page header */}
 			<div
 				style={{
@@ -119,25 +101,38 @@ export default function ReturnsPage({
 				}}>
 				<h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>Returns Page</h1>
 			</div>
+
 			{/* Settings modal for choosing visible columns */}
 			<SettingsModal
 				open={showSettings}
 				onClose={() => setShowSettings(false)}
-				allColumns={ALL_RETURN_COLUMNS}
+				allColumns={ALL_COLUMNS}
 				visibleColumns={visibleColumns}
+				setVisibleColumns={setVisibleColumns}
 				onColumnToggle={handleColumnToggle}
 				onClearAll={() => setVisibleColumns([])}
-				onResetDefault={() => setVisibleColumns(DEFAULT_RETURN_COLUMNS)}
-				defaultColumns={DEFAULT_RETURN_COLUMNS}
+				onResetDefault={() => setVisibleColumns(DEFAULT_COLUMNS)}
+				defaultColumns={DEFAULT_COLUMNS}
 			/>
+
 			{/* Main data table */}
 			<DataTable
-				data={tableData}
-				columns={ALL_RETURN_COLUMNS}
+				tableType="Returns"
+				data={returns}
+				columns={ALL_COLUMNS}
 				visibleColumns={visibleColumns}
-				onRowClick={(row) => setSelectedReturn(row)}
-				onShowSettings={() => setShowSettings(true)} // Pass handler to DataTable
+				setVisibleColumns={setVisibleColumns} // <-- Enable drag-and-drop column order
+				sortKey={sortKey}
+				sortDirection={sortDirection}
+				onSort={handleSort}
+				onRowClick={setSelectedReturn}
+				selectedRow={selectedReturn}
+				currentPage={currentPage}
+				rowsPerPage={rowsPerPage}
+				onPageChange={handlePageChange}
+				onShowSettings={() => setShowSettings(true)}
 			/>
+
 			{/* Modal for detailed return info */}
 			{selectedReturn && (
 				<ReturnDetailsModal
@@ -149,6 +144,6 @@ export default function ReturnsPage({
 					onClose={() => setSelectedReturn(null)}
 				/>
 			)}
-		</div>
+		</>
 	);
 }

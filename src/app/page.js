@@ -132,6 +132,7 @@ export default function Home() {
 
 	return (
 		<div className="page">
+			<h1>Customer Service Dashboard</h1>
 			<div className="toolbar">
 				<div className="seg">
 					<button
@@ -162,8 +163,6 @@ export default function Home() {
 					<ThemeToggle />
 				</div>
 			</div>
-
-			<h1>Customer Service Dashboard</h1>
 
 			{/* Search */}
 			<SearchBar

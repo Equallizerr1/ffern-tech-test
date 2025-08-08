@@ -179,6 +179,7 @@ export default function OrdersPage({
 
 			{/* Main data table and pagination */}
 			<DataTable
+				tableType="Orders"
 				data={ordersWithUser}
 				users={users}
 				columns={ALL_ORDER_COLUMNS}

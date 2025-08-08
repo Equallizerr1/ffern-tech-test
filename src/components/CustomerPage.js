@@ -47,13 +47,12 @@ export default function CustomerPage({
 	setSelectedOrder,
 	search,
 }) {
-	// State for modal and column settings
-	const [showSettings, setShowSettings] = useState(false); // Show/hide settings modal
-	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS); // Columns to display
-	const [sortKey, setSortKey] = useState(null); // Current sort column
-	const [sortDirection, setSortDirection] = useState("asc"); // Sort direction
-	const [currentPage, setCurrentPage] = useState(1); // Current page for pagination
-	const rowsPerPage = 20; // Number of rows per page
+	const [showSettings, setShowSettings] = useState(false);
+	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
+	const [sortKey, setSortKey] = useState(null);
+	const [sortDirection, setSortDirection] = useState("asc");
+	const [currentPage, setCurrentPage] = useState(1);
+	const rowsPerPage = 20;
 
 	// Filter users based on search input
 	const filteredUsers = users.filter(
@@ -128,6 +127,7 @@ export default function CustomerPage({
 				onClose={() => setShowSettings(false)}
 				allColumns={ALL_COLUMNS}
 				visibleColumns={visibleColumns}
+				setVisibleColumns={setVisibleColumns}
 				onColumnToggle={handleColumnToggle}
 				onClearAll={() => setVisibleColumns([])}
 				onResetDefault={() => setVisibleColumns(DEFAULT_COLUMNS)}
@@ -136,9 +136,11 @@ export default function CustomerPage({
 
 			{/* Main data table */}
 			<DataTable
-				data={sortedUsers}
+				tableType="Customers"
+				data={users}
 				columns={ALL_COLUMNS}
 				visibleColumns={visibleColumns}
+				setVisibleColumns={setVisibleColumns}
 				sortKey={sortKey}
 				sortDirection={sortDirection}
 				onSort={handleSort}
@@ -147,7 +149,7 @@ export default function CustomerPage({
 				currentPage={currentPage}
 				rowsPerPage={rowsPerPage}
 				onPageChange={handlePageChange}
-				onShowSettings={() => setShowSettings(true)} // Pass handler to DataTable
+				onShowSettings={() => setShowSettings(true)}
 			/>
 
 			{/* Modal for detailed customer info */}
