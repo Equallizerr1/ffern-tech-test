@@ -69,8 +69,8 @@ const DEFAULT_ORDER_COLUMNS = [
 
 // Main Orders Page component
 export default function OrdersPage({
-	orders,
-	users,
+	orders = [],
+	users = [],
 	selectedOrder,
 	setSelectedOrder,
 	orderLineItems,

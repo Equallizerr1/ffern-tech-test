@@ -17,12 +17,14 @@ function ThemeToggle() {
 		if (stored && stored !== theme) {
 			setTheme(stored);
 		}
-	}, []);
+		// Only run on mount, so ignore 'theme' in deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []); // Keep dependency array empty to only run on mount
 
 	useEffect(() => {
 		document.documentElement.setAttribute("data-theme", theme);
 		localStorage.setItem("theme", theme);
-	}, [theme]);
+	}, [theme]); // <-- add theme here
 
 	return (
 		<button

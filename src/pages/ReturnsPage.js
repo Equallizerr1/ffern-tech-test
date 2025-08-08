@@ -21,7 +21,7 @@ const ALL_COLUMNS = [
 const DEFAULT_COLUMNS = ["id", "order_id", "created_at", "status", "reason"];
 
 export default function ReturnsPage({
-	returns,
+	returns = [],
 	reverseShipments,
 	exchanges,
 	exchangeLineItems,
@@ -37,19 +37,21 @@ export default function ReturnsPage({
 	const [currentPage, setCurrentPage] = useState(1);
 	const rowsPerPage = 20;
 
-	// Filter returns based on search input
-	const filteredReturns = returns.filter(
-		(ret) =>
-			String(ret.id).includes(search) ||
-			String(ret.order_id).includes(search) ||
-			(ret.reason && ret.reason.toLowerCase().includes(search.toLowerCase())) ||
-			(ret.status && ret.status.toLowerCase().includes(search.toLowerCase()))
-	);
-
-	// Sort returns by selected column and direction
+	// Move filtering inside useMemo
 	const sortedReturns = React.useMemo(() => {
-		if (!sortKey) return filteredReturns;
-		const sorted = [...filteredReturns].sort((a, b) => {
+		const filtered = Array.isArray(returns)
+			? returns.filter(
+					(ret) =>
+						String(ret.id).includes(search) ||
+						String(ret.order_id).includes(search) ||
+						(ret.reason &&
+							ret.reason.toLowerCase().includes(search.toLowerCase())) ||
+						(ret.status &&
+							ret.status.toLowerCase().includes(search.toLowerCase()))
+			  )
+			: [];
+		if (!sortKey) return filtered;
+		const sorted = [...filtered].sort((a, b) => {
 			const aValue = a[sortKey] ?? "";
 			const bValue = b[sortKey] ?? "";
 			if (typeof aValue === "number" && typeof bValue === "number") {
@@ -60,7 +62,7 @@ export default function ReturnsPage({
 				: String(bValue).localeCompare(String(aValue));
 		});
 		return sorted;
-	}, [filteredReturns, sortKey, sortDirection]);
+	}, [returns, search, sortKey, sortDirection]);
 
 	// Toggle column visibility in settings modal
 	const handleColumnToggle = (key) => {
@@ -118,10 +120,10 @@ export default function ReturnsPage({
 			{/* Main data table */}
 			<DataTable
 				tableType="Returns"
-				data={returns}
+				data={sortedReturns}
 				columns={ALL_COLUMNS}
 				visibleColumns={visibleColumns}
-				setVisibleColumns={setVisibleColumns} // <-- Enable drag-and-drop column order
+				setVisibleColumns={setVisibleColumns}
 				sortKey={sortKey}
 				sortDirection={sortDirection}
 				onSort={handleSort}

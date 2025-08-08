@@ -37,7 +37,7 @@ const DEFAULT_COLUMNS = ["first_name", "last_name", "email", "user_uuid"];
 
 // Main Customers Page component
 export default function CustomerPage({
-	users,
+	users = [],
 	orders,
 	ledgerMemberships,
 	orderLineItems,
@@ -55,18 +55,27 @@ export default function CustomerPage({
 	const rowsPerPage = 20;
 
 	// Filter users based on search input
-	const filteredUsers = users.filter(
-		(user) =>
-			user.email?.toLowerCase().includes(search.toLowerCase()) ||
-			user.first_name?.toLowerCase().includes(search.toLowerCase()) ||
-			user.last_name?.toLowerCase().includes(search.toLowerCase()) ||
-			user.user_uuid?.toLowerCase().includes(search.toLowerCase())
-	);
+	const filteredUsers = Array.isArray(users)
+		? users.filter(
+				(user) =>
+					user.email?.toLowerCase().includes(search.toLowerCase()) ||
+					user.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+					user.last_name?.toLowerCase().includes(search.toLowerCase()) ||
+					user.user_uuid?.toLowerCase().includes(search.toLowerCase())
+		  )
+		: [];
 
 	// Sort users by selected column and direction
 	const sortedUsers = React.useMemo(() => {
-		if (!sortKey) return filteredUsers;
-		const sorted = [...filteredUsers].sort((a, b) => {
+		const filtered = users.filter(
+			(user) =>
+				user.email?.toLowerCase().includes(search.toLowerCase()) ||
+				user.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+				user.last_name?.toLowerCase().includes(search.toLowerCase()) ||
+				user.user_uuid?.toLowerCase().includes(search.toLowerCase())
+		);
+		if (!sortKey) return filtered;
+		const sorted = [...filtered].sort((a, b) => {
 			const aValue = a[sortKey] ?? "";
 			const bValue = b[sortKey] ?? "";
 			if (typeof aValue === "number" && typeof bValue === "number") {
@@ -77,7 +86,7 @@ export default function CustomerPage({
 				: String(bValue).localeCompare(String(aValue));
 		});
 		return sorted;
-	}, [filteredUsers, sortKey, sortDirection]);
+	}, [users, search, sortKey, sortDirection]);
 
 	// Toggle column visibility in settings modal
 	const handleColumnToggle = (key) => {
