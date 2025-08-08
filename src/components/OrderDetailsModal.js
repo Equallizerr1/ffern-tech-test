@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import RefundModal from "./RefundModal"; // Adjust the import path as necessary
 
 // Modal to display detailed information about an order, including customer and line items
 export default function OrderDetailsModal({
@@ -6,7 +7,11 @@ export default function OrderDetailsModal({
 	users,
 	orderLineItems,
 	onClose,
+	canRefund, // New prop to determine if refund is possible
+	onRefundSuccess, // Callback for refund success
 }) {
+	const [showRefundModal, setShowRefundModal] = useState(false);
+
 	if (!order) return null;
 
 	// Find the user associated with this order
@@ -153,6 +158,30 @@ export default function OrderDetailsModal({
 						Order Total: £{totalPrice}
 					</p>
 				</div>
+				{/* Refund button - always visible */}
+				<button
+					className="btn btn-danger"
+					onClick={() => setShowRefundModal(true)}
+					style={{
+						marginTop: 16,
+						padding: "8px 16px",
+						background: "red",
+						color: "#fff",
+						border: "none",
+						borderRadius: 4,
+						cursor: "pointer",
+						fontWeight: "bold",
+					}}>
+					Initiate Refund
+				</button>
+				{/* Refund modal - controlled by showRefundModal state */}
+				{showRefundModal && (
+					<RefundModal
+						order={order}
+						onClose={() => setShowRefundModal(false)}
+						onRefundSuccess={onRefundSuccess}
+					/>
+				)}
 			</div>
 		</div>
 	);

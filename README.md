@@ -51,14 +51,15 @@ npm run dev
 
 ## Features
 
-- **Unified Search**: Quickly find customers, orders, or returns with a powerful search feature.
-- **Customer Insights**: View detailed information about customers, including order history and current issues.
-- **Order Management**: Efficiently manage and track orders from creation to fulfillment.
-- **Return Processing**: Handle returns and exchanges with ease, including restocking and refunding.
-- **Customizable Dashboard**: Tailor the dashboard to your workflow with customizable views and saved searches.
-- **Responsive Design**: Access the dashboard on any device, with a seamless experience on mobile and desktop.
-- **Dark/Light Mode**: Switch between dark and light themes for comfortable viewing in any lighting condition.
-- **Drag-and-Drop Interface**: Reorder columns and manage data layout with an intuitive drag-and-drop interface.
+- 🔍 **Powerful Search:** Instantly filter customers, orders, and returns.
+- 🧑‍💼 **Customer Overview:** View customer profiles, memberships, and order history.
+- 📦 **Order Management:** See all orders, line items, pricing, status, and shipment tracking.
+- 🔄 **Returns & Exchanges:** Track returns, reasons, statuses, exchanges, and credits/refunds.
+- 💸 **Refunds:** Issue refunds directly from the order or return details modal—available to all users.
+- 🛠 **Customizable Tables:** Show/hide columns, reorder columns via drag-and-drop.
+- 🌗 **Light/Dark Mode:** Toggle between light and dark themes.
+- 📖 **In-App User Guide:** Always up-to-date help, loaded from a Markdown file.
+- ⚡ **Responsive & Fast:** Works great on desktop and mobile.
 
 ---
 

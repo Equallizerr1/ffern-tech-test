@@ -61,6 +61,21 @@ This platform is designed to help customer service representatives efficiently h
 
 ---
 
+## Issuing Refunds (Experimental Feature - No BackEnd support yet)
+
+- **Initiate Refund:**  
+  Any user can now issue a refund directly from the order or return details modal.
+- **How to Issue a Refund:**
+  1. Open the details for the relevant order or return.
+  2. Click the **Initiate Refund** button.
+  3. Enter the refund amount and reason in the refund form.
+  4. Confirm the refund to process it immediately.
+
+> **Note:**  
+> All users have permission to issue refunds. Please use this feature responsibly.
+
+---
+
 ## Troubleshooting
 
 - If data is not loading, check your internet connection and refresh the page.
