@@ -5,16 +5,18 @@ import CustomerPage from "../components/CustomerPage";
 import OrdersPage from "../components/OrdersPage";
 import ReturnsPage from "../components/ReturnsPage";
 import SearchBar from "../components/SearchBar";
-import UserGuideModal from "../components/UserGuideModal"; // Make sure this file exists
+import UserGuideModal from "../components/UserGuideModal";
 
 // Theme toggle component
 function ThemeToggle() {
-	const [theme, setTheme] = useState(() => {
-		if (typeof window !== "undefined") {
-			return localStorage.getItem("theme") || "dark";
+	const [theme, setTheme] = useState("dark"); // Always "dark" on server
+
+	useEffect(() => {
+		const stored = localStorage.getItem("theme");
+		if (stored && stored !== theme) {
+			setTheme(stored);
 		}
-		return "dark";
-	});
+	}, []);
 
 	useEffect(() => {
 		document.documentElement.setAttribute("data-theme", theme);

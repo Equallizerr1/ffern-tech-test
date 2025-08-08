@@ -6,7 +6,7 @@ export default function DataTable({
 	data,
 	columns,
 	visibleColumns,
-	setVisibleColumns, // <-- REQUIRED for column reordering!
+	setVisibleColumns,
 	sortKey,
 	sortDirection,
 	onSort,
