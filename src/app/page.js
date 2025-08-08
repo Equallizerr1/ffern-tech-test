@@ -14,6 +14,7 @@ export default function Home() {
 	const [returns, setReturns] = useState([]);
 	const [reverseShipments, setReverseShipments] = useState([]);
 	const [exchanges, setExchanges] = useState([]);
+	const [exchangeLineItems, setExchangeLineItems] = useState([]);
 	const [search, setSearch] = useState("");
 	const [selectedUser, setSelectedUser] = useState(null);
 	const [selectedOrder, setSelectedOrder] = useState(null);
@@ -32,6 +33,7 @@ export default function Home() {
 				setReturns(data.returns || []);
 				setReverseShipments(data.reverseShipments || []);
 				setExchanges(data.exchanges || []);
+				setExchangeLineItems(data.exchangeLineItems || []);
 				setError(null);
 			})
 			.catch((err) => setError(err.message))
@@ -160,6 +162,7 @@ export default function Home() {
 					users={users}
 					reverseShipments={reverseShipments}
 					exchanges={exchanges}
+					exchangeLineItems={exchangeLineItems}
 				/>
 			)}
 		</div>

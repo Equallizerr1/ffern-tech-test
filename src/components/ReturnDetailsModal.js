@@ -1,0 +1,242 @@
+import React from "react";
+
+export default function ReturnDetailsModal({
+	returnOrder,
+	reverseShipments,
+	exchanges,
+	exchangeLineItems,
+	onClose,
+}) {
+	if (!returnOrder) return null;
+
+	// Find all reverse shipments for this return
+	const shipments = reverseShipments.filter(
+		(rs) => rs.return_id === returnOrder.id
+	);
+	// Find all exchanges for this return
+	const relatedExchanges = exchanges.filter(
+		(e) => e.return_id === returnOrder.id
+	);
+	// Get exchange items for a return
+	// const exchangeItems = exchangeLineItems.filter(
+	// 		(item) => item.exchange_id === relatedExchanges[0].id
+	// 	);
+
+	return (
+		<div
+			style={{
+				position: "fixed",
+				top: 0,
+				left: 0,
+				width: "100vw",
+				height: "100vh",
+				background: "rgba(0,0,0,0.3)",
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				zIndex: 1000,
+			}}
+			onClick={onClose}>
+			<div
+				style={{
+					background: "#fff",
+					color: "#222",
+					padding: 32,
+					borderRadius: 8,
+					minWidth: 640,
+					maxWidth: "90vw",
+					maxHeight: "90vh",
+					overflowY: "auto",
+					boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
+					position: "relative",
+				}}
+				onClick={(e) => e.stopPropagation()}>
+				<button
+					style={{
+						position: "absolute",
+						top: 16,
+						right: 16,
+						border: "2px solid #222",
+						borderRadius: 4,
+						padding: "4px 12px",
+						background: "#fff",
+						color: "#222",
+						cursor: "pointer",
+						outline: "2px solid #222",
+						fontWeight: "bold",
+					}}
+					onClick={onClose}>
+					Close
+				</button>
+				<h2 style={{ marginTop: 12, fontSize: "1.5rem" }}>Return Details</h2>
+				<p>
+					Return ID: <b>{returnOrder.id}</b>
+				</p>
+				<p>
+					Status: <b>{returnOrder.status || "N/A"}</b>
+				</p>
+				<p>
+					Reason: <b>{returnOrder.reason || "N/A"}</b>
+				</p>
+				<p>
+					Created:{" "}
+					{returnOrder.created_at
+						? new Date(returnOrder.created_at).toLocaleString()
+						: "N/A"}
+				</p>
+				<p>
+					Refund Amount:{" "}
+					<b>
+						{returnOrder.refund_amount !== undefined
+							? `£${returnOrder.refund_amount}`
+							: "N/A"}
+					</b>
+				</p>
+				<p>
+					Refund Status: <b>{returnOrder.refund_status || "N/A"}</b>
+				</p>
+				<p>
+					Credit Issued: <b>{returnOrder.credit_issued ? "Yes" : "No"}</b>
+				</p>
+				<h3 style={{ marginTop: 24, fontSize: "1.2rem" }}>Reverse Shipments</h3>
+				<ul>
+					{shipments.length === 0 && <li>No reverse shipments found.</li>}
+					{shipments.map((shipment) => (
+						<li key={shipment.id} style={{ marginBottom: 8 }}>
+							<p>
+								Tracking Number: <b>{shipment.tracking_number || "N/A"}</b>
+							</p>
+							<p>
+								Tracking URL:{" "}
+								{shipment.tracking_url ? (
+									<a
+										href={shipment.tracking_url}
+										target="_blank"
+										rel="noopener noreferrer"
+										style={{
+											color: "#0074d9",
+											textDecoration: "underline",
+											fontWeight: "bold",
+										}}>
+										Track
+									</a>
+								) : (
+									"N/A"
+								)}
+							</p>
+							<p>
+								Replacement Item: <b>{shipment.replacement_item || "N/A"}</b>
+							</p>
+							<p>
+								Sender Name: <b>{shipment.sender_name || "N/A"}</b>
+							</p>
+							<p>
+								Sender Postcode: <b>{shipment.sender_postcode || "N/A"}</b>
+							</p>
+							<p>
+								Postage Cost:{" "}
+								<b>
+									{shipment.postage_cost !== undefined
+										? `£${shipment.postage_cost}`
+										: "N/A"}
+								</b>
+							</p>
+							<p>
+								Carrier: <b>{shipment.carrier || "N/A"}</b>
+							</p>
+							<p>
+								Fulfillment Service:{" "}
+								<b>{shipment.fulfillment_service || "N/A"}</b>
+							</p>
+							<p>
+								Delivery Status: <b>{shipment.delivery_status || "N/A"}</b>
+							</p>
+							<p>
+								Label URL:{" "}
+								{shipment.label_url ? (
+									<a
+										href={shipment.label_url}
+										target="_blank"
+										rel="noopener noreferrer"
+										style={{
+											color: "#0074d9",
+											textDecoration: "underline",
+											fontWeight: "bold",
+										}}>
+										Label
+									</a>
+								) : (
+									"N/A"
+								)}
+							</p>
+							<p>
+								Processed By: <b>{shipment.processed_by || "N/A"}</b>
+							</p>
+							<p>
+								Received At:{" "}
+								<b>
+									{shipment.received_at
+										? new Date(shipment.received_at).toLocaleString()
+										: "N/A"}
+								</b>
+							</p>
+							<p>
+								Received By: <b>{shipment.received_by || "N/A"}</b>
+							</p>
+						</li>
+					))}
+				</ul>
+				<h3 style={{ marginTop: 24, fontSize: "1.2rem" }}>Exchanges</h3>
+				<ul>
+					{relatedExchanges.length === 0 && <li>No exchanges found.</li>}
+					{relatedExchanges.map((exch) => (
+						<li key={exch.id} style={{ marginBottom: 8 }}>
+							<p>
+								Exchange ID: <b>{exch.id}</b>
+							</p>
+							<p>
+								Replacement Item: <b>{exch.replacement_item || "N/A"}</b>
+							</p>
+							<p>
+								Status: <b>{exch.status || "N/A"}</b>
+							</p>
+							{/* Exchange Line Items */}
+							{exchangeLineItems &&
+								exchangeLineItems
+									.filter((item) => item.exchange_id === exch.id)
+									.map((item, idx) => (
+										<div
+											key={item.id || idx}
+											style={{ marginLeft: 16, marginBottom: 4 }}>
+											<p>
+												Product:{" "}
+												<b>{item.product_name || item.product_id || "N/A"}</b>
+											</p>
+											<p>
+												Quantity: <b>{item.quantity || "N/A"}</b>
+											</p>
+											<p>
+												Unit Price:{" "}
+												<b>
+													{item.unit_price !== undefined
+														? `£${item.unit_price}`
+														: "N/A"}
+												</b>
+											</p>
+											<p>
+												Total:{" "}
+												<b>
+													{item.amount !== undefined
+														? `£${item.amount}`
+														: "N/A"}
+												</b>
+											</p>
+										</div>
+									))}
+						</li>
+					))}
+				</ul>
+			</div>
+		</div>
+	);
+}

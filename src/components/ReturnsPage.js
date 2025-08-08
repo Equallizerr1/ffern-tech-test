@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import DataTable from "./DataTable";
+import ReturnDetailsModal from "./ReturnDetailsModal";
 
 const ALL_RETURN_COLUMNS = [
 	{ key: "id", label: "Return ID" },
@@ -25,8 +26,11 @@ export default function ReturnsPage({
 	returns,
 	reverseShipments,
 	exchanges,
+	exchangeLineItems,
 	users,
 }) {
+	const [selectedReturn, setSelectedReturn] = useState(null);
+
 	const tableData = returns.map((r) => {
 		// Find all reverse shipments for this return
 		const shipments = reverseShipments.filter((rs) => rs.return_id === r.id);
@@ -99,8 +103,18 @@ export default function ReturnsPage({
 				data={tableData}
 				columns={ALL_RETURN_COLUMNS}
 				visibleColumns={DEFAULT_RETURN_COLUMNS}
-				// Optionally add sorting, row click, etc.
+				onRowClick={(row) => setSelectedReturn(row)}
+				// ...other props
 			/>
+			{selectedReturn && (
+				<ReturnDetailsModal
+					returnOrder={selectedReturn}
+					reverseShipments={reverseShipments}
+					exchanges={exchanges}
+					exchangeLineItems={exchangeLineItems}
+					onClose={() => setSelectedReturn(null)}
+				/>
+			)}
 		</div>
 	);
 }
