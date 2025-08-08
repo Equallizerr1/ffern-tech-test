@@ -28,8 +28,8 @@ This platform is designed to help customer service representatives efficiently h
 
 ## Viewing Details
 
-- Click on any row in the table to open a detailed modal.
-- In the modal, you can view:
+- Click on any row in the table to open a detailed popup window.
+- In this popup window, you can view:
   - **Customer Details:** Profile, memberships, and related orders.
   - **Order Details:** Customer info, shipping/tracking, and line items.
   - **Return Details:** Refunds, reverse shipments, exchanges, and original order items.
@@ -54,8 +54,8 @@ This platform is designed to help customer service representatives efficiently h
 
 ## Rearranging Table Columns
 
-- **New Feature:**  
-  You can now rearrange the order of table columns by dragging and dropping the column headers.
+You can rearrange the order of table columns by dragging and dropping the column headers.
+
 - To do this, click and hold a column header, then drag it to your desired position and release.
 - The table will immediately update to reflect your chosen column order.
 
@@ -64,7 +64,7 @@ This platform is designed to help customer service representatives efficiently h
 ## Issuing Refunds (Experimental Feature - No BackEnd support yet)
 
 - **Initiate Refund:**  
-  Any user can now issue a refund directly from the order or return details modal.
+  Any user can now issue a refund directly from the order or return details popup window.
 - **How to Issue a Refund:**
   1. Open the details for the relevant order or return.
   2. Click the **Initiate Refund** button.
@@ -93,13 +93,13 @@ This platform is designed to help customer service representatives efficiently h
 ## FAQ
 
 **Q: How do I find a customer by email?**  
-A: Enter the email address in the search bar and select the Customers tab.
+A: Select the Customers tab and enter the email address in the search bar.
 
 **Q: How do I check the status of a return?**  
-A: Go to the Returns tab, search by return ID or customer, and click the row for details.
+A: Go to the Returns tab, search by return ID, and click the row for details.
 
 **Q: Can I see what was exchanged for a return?**  
-A: Yes, open the return details modal to see all related exchanges and original order items.
+A: Yes, open the return details in the Returns tab to see all related exchanges and original order items.
 
 **Q: How do I change the order of columns in a table?**  
 A: Simply drag and drop the column headers to rearrange them as you like.
