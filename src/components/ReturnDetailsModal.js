@@ -43,9 +43,10 @@ export default function ReturnDetailsModal({
 			}}
 			onClick={onClose}>
 			<div
+				className="modal"
 				style={{
-					background: "#fff",
-					color: "#222",
+					background: "var(--card, #fff)",
+					color: "var(--text, #222)",
 					padding: 32,
 					borderRadius: 8,
 					minWidth: 640,
@@ -54,6 +55,7 @@ export default function ReturnDetailsModal({
 					overflowY: "auto",
 					boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
 					position: "relative",
+					border: "1px solid var(--border, #222)",
 				}}
 				onClick={(e) => e.stopPropagation()}>
 				{/* Close button */}
@@ -62,13 +64,13 @@ export default function ReturnDetailsModal({
 						position: "absolute",
 						top: 16,
 						right: 16,
-						border: "2px solid #222",
+						border: "2px solid var(--border, #222)",
 						borderRadius: 4,
 						padding: "4px 12px",
-						background: "#fff",
-						color: "#222",
+						background: "var(--card, #fff)",
+						color: "var(--text, #222)",
 						cursor: "pointer",
-						outline: "2px solid #222",
+						outline: "2px solid var(--border, #222)",
 						fontWeight: "bold",
 					}}
 					onClick={onClose}>
@@ -237,7 +239,7 @@ export default function ReturnDetailsModal({
 										style={{
 											minWidth: 260,
 											flex: "0 0 260px",
-											background: "#f8f8f8",
+											background: "var(--bg-elev, #f8f8f8)",
 											padding: 12,
 											borderRadius: 6,
 										}}>
@@ -292,7 +294,7 @@ export default function ReturnDetailsModal({
 											style={{
 												minWidth: 260,
 												flex: "0 0 260px",
-												background: "#f4f4f4",
+												background: "var(--bg-elev, #f4f4f4)",
 												padding: 12,
 												borderRadius: 6,
 											}}>

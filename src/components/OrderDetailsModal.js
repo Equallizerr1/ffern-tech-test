@@ -7,8 +7,8 @@ export default function OrderDetailsModal({
 	users,
 	orderLineItems,
 	onClose,
-	canRefund, // New prop to determine if refund is possible
-	onRefundSuccess, // Callback for refund success
+	canRefund,
+	onRefundSuccess,
 }) {
 	const [showRefundModal, setShowRefundModal] = useState(false);
 
@@ -42,9 +42,10 @@ export default function OrderDetailsModal({
 			}}
 			onClick={onClose}>
 			<div
+				className="modal"
 				style={{
-					background: "#fff",
-					color: "#222",
+					background: "var(--card, #fff)",
+					color: "var(--text, #222)",
 					padding: 32,
 					borderRadius: 8,
 					minWidth: 640,
@@ -53,6 +54,7 @@ export default function OrderDetailsModal({
 					overflowY: "auto",
 					boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
 					position: "relative",
+					border: "1px solid var(--border, #222)",
 				}}
 				onClick={(e) => e.stopPropagation()}>
 				{/* Close button */}
@@ -61,13 +63,13 @@ export default function OrderDetailsModal({
 						position: "absolute",
 						top: 16,
 						right: 16,
-						border: "2px solid #222",
+						border: "2px solid var(--border, #222)",
 						borderRadius: 4,
 						padding: "4px 12px",
-						background: "#fff",
-						color: "#222",
+						background: "var(--card, #fff)",
+						color: "var(--text, #222)",
 						cursor: "pointer",
-						outline: "2px solid #222",
+						outline: "2px solid var(--border, #222)",
 						fontWeight: "bold",
 					}}
 					onClick={onClose}>
