@@ -36,7 +36,7 @@ export default function ReturnsPage({
 				<tbody>
 					{returns.map((ret) => {
 						const user = users.find((u) => u.id === ret.user_id);
-						const shipments = ret.reverseShipments || [];
+						const shipments = reverseShipments || [];
 						return (
 							<tr key={ret.id}>
 								<td>{ret.id}</td>
