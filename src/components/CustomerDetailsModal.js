@@ -4,9 +4,7 @@ export default function CustomerDetailsModal({
 	user,
 	orders,
 	ledgerMemberships,
-	setSelectedUser,
 	setSelectedOrder,
-	orderLineItems,
 	onClose,
 }) {
 	if (!user) return null;

@@ -23,58 +23,72 @@ const DEFAULT_RETURN_COLUMNS = [
 
 export default function ReturnsPage({
 	returns,
-	users,
 	reverseShipments,
 	exchanges,
+	users,
 }) {
-	const tableData = returns.map((ret) => {
-		const user = users.find((u) => u.id === ret.user_id);
-		const shipments = ret.reverseShipments || [];
+	const tableData = returns.map((r) => {
+		// Find all reverse shipments for this return
+		const shipments = reverseShipments.filter((rs) => rs.return_id === r.id);
+		// Find all exchanges for this return
+		const relatedExchanges = exchanges.filter((e) => e.return_id === r.id);
+
+		// Get customer name from the first shipment's sender_name, fallback to user_id
+		const customer =
+			shipments.length && shipments[0].sender_name
+				? shipments[0].sender_name
+				: r.user_id || "Unknown";
+
+		// Combine tracking numbers and replacement items from all shipments/exchanges
+		const exchangeTracking = shipments.length
+			? shipments.map((shipment, idx) => [
+					shipment.tracking_number && (
+						<div key={`num-${idx}`}>
+							<b>{shipment.tracking_number}</b>
+						</div>
+					),
+					shipment.tracking_url && (
+						<div key={`url-${idx}`}>
+							<a
+								href={shipment.tracking_url}
+								target="_blank"
+								rel="noopener noreferrer"
+								style={{
+									color: "#0074d9",
+									textDecoration: "underline",
+									fontWeight: "bold",
+								}}>
+								Track
+							</a>
+						</div>
+					),
+			  ])
+			: "N/A";
+
+		const replacementItems = [
+			...shipments
+				.filter((s) => s.replacement_item)
+				.map((s, i) => (
+					<div key={`ship-repl-${i}`}>
+						<b>{s.replacement_item}</b>
+					</div>
+				)),
+			...relatedExchanges
+				.filter((e) => e.replacement_item)
+				.map((e, i) => (
+					<div key={`exch-repl-${i}`}>
+						<b>{e.replacement_item}</b>
+					</div>
+				)),
+		];
+
 		return {
-			id: ret.id,
-			customer: user
-				? `${user.first_name} ${user.last_name}`
-				: ret.user_id || "Unknown",
-			status: ret.status || "N/A",
-			reason: ret.reason || "N/A",
-			created_at: ret.created_at
-				? new Date(ret.created_at).toLocaleDateString()
-				: "N/A",
-			exchange_tracking:
-				shipments.length > 0
-					? shipments.map((shipment, idx) => [
-							shipment.tracking_number && (
-								<div key={`num-${idx}`}>
-									<b>{shipment.tracking_number}</b>
-								</div>
-							),
-							shipment.tracking_url && (
-								<div key={`url-${idx}`}>
-									<a
-										href={shipment.tracking_url}
-										target="_blank"
-										rel="noopener noreferrer"
-										style={{
-											color: "#0074d9",
-											textDecoration: "underline",
-											fontWeight: "bold",
-										}}>
-										Track
-									</a>
-								</div>
-							),
-					  ])
-					: "—",
-			replacement_item:
-				shipments.length > 0 && shipments.some((s) => s.replacement_item)
-					? shipments
-							.filter((s) => s.replacement_item)
-							.map((s, i) => (
-								<div key={i}>
-									<b>{s.replacement_item}</b>
-								</div>
-							))
-					: "—",
+			...r,
+			customer,
+			exchange_tracking: exchangeTracking,
+			replacement_item: replacementItems.length ? replacementItems : "N/A",
+			status: r.status || "Pending",
+			created_at: new Date(r.created_at).toLocaleString(),
 		};
 	});
 

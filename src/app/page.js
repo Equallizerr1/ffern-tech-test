@@ -72,13 +72,6 @@ export default function Home() {
 			r.reason?.toLowerCase().includes(searchLower)
 	);
 
-	// Combine all filtered results into one array with a type label
-	const combinedResults = [
-		...filteredUsers.map((u) => ({ type: "user", ...u })),
-		...filteredOrders.map((o) => ({ type: "order", ...o })),
-		...filteredReturns.map((r) => ({ type: "return", ...r })),
-	];
-
 	return (
 		<div>
 			<h1 style={{ fontSize: "2.5rem" }}>Customer Service Dashboard</h1>

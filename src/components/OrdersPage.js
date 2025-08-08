@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import DataTable from "./DataTable";
+import SettingsModal from "./SettingsModal";
 
 const ALL_ORDER_COLUMNS = [
 	{ key: "id", label: "Order ID" },
@@ -64,10 +65,6 @@ const DEFAULT_ORDER_COLUMNS = [
 	"fulfillment_service",
 ];
 
-const rowHoverStyle = {
-	transition: "background 0.2s",
-};
-
 export default function OrdersPage({
 	orders,
 	users,
@@ -110,10 +107,6 @@ export default function OrdersPage({
 
 	// Pagination logic
 	const totalPages = Math.ceil(sortedOrders.length / rowsPerPage);
-	const paginatedOrders = sortedOrders.slice(
-		(currentPage - 1) * rowsPerPage,
-		currentPage * rowsPerPage
-	);
 
 	const handleColumnToggle = (key) => {
 		setVisibleColumns((cols) =>
@@ -139,7 +132,6 @@ export default function OrdersPage({
 		setCurrentPage(1);
 	}, [search, sortKey, sortDirection, visibleColumns]);
 
-	// Add this before rendering <DataTable>
 	const ordersWithUser = sortedOrders.map((order) => {
 		const user = users.find((u) => u.id === order.user_id);
 		return {
@@ -160,21 +152,6 @@ export default function OrdersPage({
 					justifyContent: "space-between",
 					alignItems: "center",
 				}}>
-				{/* <input
-					type="text"
-					placeholder="Search by order ID, status, or customer name"
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-					style={{
-						width: "100%",
-						padding: "8px",
-						boxSizing: "border-box",
-						fontSize: "1rem",
-						border: "2px solid #555",
-						borderRadius: 8,
-						marginRight: 16,
-					}}
-				/> */}
 				<button
 					style={{
 						border: "2px solid #222",
@@ -193,107 +170,16 @@ export default function OrdersPage({
 			</div>
 
 			{/* Settings Modal */}
-			{showSettings && (
-				<div
-					style={{
-						position: "fixed",
-						top: 0,
-						left: 0,
-						width: "100vw",
-						height: "100vh",
-						background: "rgba(0,0,0,0.3)",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						zIndex: 1000,
-					}}>
-					<div
-						style={{
-							background: "#fff",
-							color: "#222",
-							padding: 24,
-							borderRadius: 8,
-							minWidth: 320,
-							maxWidth: "90vw",
-							maxHeight: "90vh",
-							boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
-							position: "relative",
-							overflowY: "auto",
-						}}>
-						<h3 style={{ fontWeight: "bold" }}>Choose columns to display</h3>
-						<div
-							style={{
-								display: "grid",
-								gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-								gap: "8px 24px",
-								maxWidth: "100%",
-							}}>
-							{ALL_ORDER_COLUMNS.map((col) => (
-								<div key={col.key}>
-									<label>
-										<input
-											type="checkbox"
-											checked={visibleColumns.includes(col.key)}
-											onChange={() => handleColumnToggle(col.key)}
-										/>
-										{col.label}
-									</label>
-								</div>
-							))}
-						</div>
-						<div
-							style={{
-								display: "flex",
-								gap: 8,
-								marginTop: 16,
-								flexWrap: "wrap",
-							}}>
-							<button
-								style={{
-									border: "2px solid #222",
-									borderRadius: 4,
-									padding: "4px 12px",
-									background: "#fff",
-									color: "#222",
-									cursor: "pointer",
-									outline: "2px solid #222",
-									fontWeight: "bold",
-								}}
-								onClick={() => setVisibleColumns([])}>
-								Clear All
-							</button>
-							<button
-								style={{
-									border: "2px solid #222",
-									borderRadius: 4,
-									padding: "4px 12px",
-									background: "#fff",
-									color: "#222",
-									cursor: "pointer",
-									outline: "2px solid #222",
-									fontWeight: "bold",
-								}}
-								onClick={() => setVisibleColumns(DEFAULT_ORDER_COLUMNS)}>
-								Reset to Default
-							</button>
-							<button
-								style={{
-									border: "2px solid #222",
-									borderRadius: 4,
-									padding: "4px 12px",
-									background: "#fff",
-									color: "#222",
-									cursor: "pointer",
-									outline: "2px solid #222",
-									fontWeight: "bold",
-								}}
-								onClick={() => setShowSettings(false)}>
-								Close
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
+			<SettingsModal
+				open={showSettings}
+				onClose={() => setShowSettings(false)}
+				allColumns={ALL_ORDER_COLUMNS}
+				visibleColumns={visibleColumns}
+				onColumnToggle={handleColumnToggle}
+				onClearAll={() => setVisibleColumns([])}
+				onResetDefault={() => setVisibleColumns(DEFAULT_ORDER_COLUMNS)}
+				defaultColumns={DEFAULT_ORDER_COLUMNS}
+			/>
 
 			{/* table and pagination (always visible) */}
 			<DataTable
@@ -306,50 +192,10 @@ export default function OrdersPage({
 				onSort={handleSort}
 				onRowClick={setSelectedOrder}
 				selectedRow={selectedOrder}
+				currentPage={currentPage}
+				rowsPerPage={rowsPerPage}
+				onPageChange={handlePageChange}
 			/>
-
-			{/* Pagination Controls */}
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-					margin: "16px 0",
-				}}>
-				<button
-					onClick={() => handlePageChange(currentPage - 1)}
-					disabled={currentPage === 1}
-					style={{
-						marginRight: 8,
-						padding: "4px 12px",
-						border: "2px solid #222",
-						borderRadius: 4,
-						background: "#fff",
-						color: "#222",
-						cursor: currentPage === 1 ? "not-allowed" : "pointer",
-						fontWeight: "bold",
-					}}>
-					Prev
-				</button>
-				<span style={{ fontWeight: "bold", margin: "0 8px" }}>
-					Page {currentPage} of {totalPages}
-				</span>
-				<button
-					onClick={() => handlePageChange(currentPage + 1)}
-					disabled={currentPage === totalPages}
-					style={{
-						marginLeft: 8,
-						padding: "4px 12px",
-						border: "2px solid #222",
-						borderRadius: 4,
-						background: "#fff",
-						color: "#222",
-						cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-						fontWeight: "bold",
-					}}>
-					Next
-				</button>
-			</div>
 
 			{selectedOrder && (
 				<OrderDetailsModal

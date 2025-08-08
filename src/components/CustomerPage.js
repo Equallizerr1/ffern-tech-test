@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import CustomerDetailsModal from "./CustomerDetailsModal";
 import DataTable from "./DataTable";
+import SettingsModal from "./SettingsModal";
 
 const ALL_COLUMNS = [
 	{ key: "id", label: "ID" },
@@ -42,12 +43,13 @@ export default function CustomerPage({
 	selectedOrder,
 	setSelectedOrder,
 	search,
-	setSearch,
 }) {
 	const [showSettings, setShowSettings] = useState(false);
 	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
 	const [sortKey, setSortKey] = useState(null);
 	const [sortDirection, setSortDirection] = useState("asc");
+	const [currentPage, setCurrentPage] = useState(1);
+	const rowsPerPage = 20; // Change this value for more/less rows per page
 
 	const filteredUsers = users.filter(
 		(user) =>
@@ -77,6 +79,14 @@ export default function CustomerPage({
 			cols.includes(key) ? cols.filter((col) => col !== key) : [...cols, key]
 		);
 	};
+	const handlePageChange = (page) => {
+		if (page >= 1 && page <= totalPages) setCurrentPage(page);
+	};
+
+	// Reset to first page when search, sort, or filter changes
+	React.useEffect(() => {
+		setCurrentPage(1);
+	}, [search, sortKey, sortDirection, visibleColumns]);
 
 	const handleSort = (key) => {
 		if (sortKey === key) {
@@ -112,92 +122,16 @@ export default function CustomerPage({
 				</button>
 			</div>
 
-			{/* Settings Modal */}
-			{showSettings && (
-				<div
-					style={{
-						position: "fixed",
-						top: 0,
-						left: 0,
-						width: "100vw",
-						height: "100vh",
-						background: "rgba(0,0,0,0.3)",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						zIndex: 1000,
-					}}>
-					<div
-						style={{
-							background: "#fff",
-							color: "#222",
-							padding: 24,
-							borderRadius: 8,
-							minWidth: 320,
-							maxWidth: "90vw",
-							boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
-							position: "relative",
-						}}>
-						<h3 style={{ fontWeight: "bold" }}>Choose columns to display</h3>
-						{ALL_COLUMNS.map((col) => (
-							<div key={col.key}>
-								<label>
-									<input
-										type="checkbox"
-										checked={visibleColumns.includes(col.key)}
-										onChange={() => handleColumnToggle(col.key)}
-									/>
-									{col.label}
-								</label>
-							</div>
-						))}
-						<div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-							<button
-								style={{
-									border: "2px solid #222",
-									borderRadius: 4,
-									padding: "4px 12px",
-									background: "#fff",
-									color: "#222",
-									cursor: "pointer",
-									outline: "2px solid #222",
-									fontWeight: "bold",
-								}}
-								onClick={() => setVisibleColumns([])}>
-								Clear All
-							</button>
-							<button
-								style={{
-									border: "2px solid #222",
-									borderRadius: 4,
-									padding: "4px 12px",
-									background: "#fff",
-									color: "#222",
-									cursor: "pointer",
-									outline: "2px solid #222",
-									fontWeight: "bold",
-								}}
-								onClick={() => setVisibleColumns(DEFAULT_COLUMNS)}>
-								Reset to Default
-							</button>
-							<button
-								style={{
-									border: "2px solid #222",
-									borderRadius: 4,
-									padding: "4px 12px",
-									background: "#fff",
-									color: "#222",
-									cursor: "pointer",
-									outline: "2px solid #222",
-									fontWeight: "bold",
-								}}
-								onClick={() => setShowSettings(false)}>
-								Close
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
+			<SettingsModal
+				open={showSettings}
+				onClose={() => setShowSettings(false)}
+				allColumns={ALL_COLUMNS}
+				visibleColumns={visibleColumns}
+				onColumnToggle={handleColumnToggle}
+				onClearAll={() => setVisibleColumns([])}
+				onResetDefault={() => setVisibleColumns(DEFAULT_COLUMNS)}
+				defaultColumns={DEFAULT_COLUMNS}
+			/>
 
 			<DataTable
 				data={sortedUsers}
@@ -208,6 +142,9 @@ export default function CustomerPage({
 				onSort={handleSort}
 				onRowClick={setSelectedUser}
 				selectedRow={selectedUser}
+				currentPage={currentPage}
+				rowsPerPage={rowsPerPage}
+				onPageChange={handlePageChange}
 			/>
 
 			{selectedUser && (
