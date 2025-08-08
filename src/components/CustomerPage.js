@@ -95,21 +95,6 @@ export default function CustomerPage({
 					justifyContent: "space-between",
 					alignItems: "center",
 				}}>
-				<input
-					style={{
-						width: "100%",
-						padding: "8px",
-						boxSizing: "border-box",
-						fontSize: "1rem",
-						border: "2px solid #555",
-						borderRadius: 8,
-						marginRight: 16,
-					}}
-					type="text"
-					placeholder="Search by email, name, or UUID"
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-				/>
 				<button
 					style={{
 						border: "2px solid #222",

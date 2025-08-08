@@ -4,6 +4,7 @@ import { fetchUserDetails } from "../utils/fetchUserDetails";
 import CustomerPage from "../components/CustomerPage";
 import OrdersPage from "../components/OrdersPage";
 import ReturnsPage from "../components/ReturnsPage";
+import SearchBar from "../components/SearchBar";
 
 export default function Home() {
 	const [users, setUsers] = useState([]);
@@ -36,6 +37,47 @@ export default function Home() {
 			.catch((err) => setError(err.message))
 			.finally(() => setLoading(false));
 	}, []);
+
+	// Filtering logic
+	const searchLower = search.toLowerCase();
+
+	const filteredUsers = users.filter(
+		(u) =>
+			u.first_name?.toLowerCase().includes(searchLower) ||
+			u.last_name?.toLowerCase().includes(searchLower) ||
+			u.email?.toLowerCase().includes(searchLower) ||
+			u.user_uuid?.toLowerCase().includes(searchLower)
+	);
+
+	const filteredOrders = orders.filter((o) => {
+		const user = users.find((u) => u.id === o.user_id);
+		return (
+			o.id?.toString().includes(searchLower) ||
+			o.user_id?.toString().includes(searchLower) ||
+			o.chargebee_order_id?.toLowerCase().includes(searchLower) ||
+			o.tracking_number?.toLowerCase().includes(searchLower) ||
+			o.tracking_url?.toLowerCase().includes(searchLower) ||
+			(user &&
+				(user.first_name?.toLowerCase().includes(searchLower) ||
+					user.last_name?.toLowerCase().includes(searchLower) ||
+					user.email?.toLowerCase().includes(searchLower)))
+		);
+	});
+
+	const filteredReturns = returns.filter(
+		(r) =>
+			r.id?.toString().includes(searchLower) ||
+			r.user_id?.toString().includes(searchLower) ||
+			r.status?.toLowerCase().includes(searchLower) ||
+			r.reason?.toLowerCase().includes(searchLower)
+	);
+
+	// Combine all filtered results into one array with a type label
+	const combinedResults = [
+		...filteredUsers.map((u) => ({ type: "user", ...u })),
+		...filteredOrders.map((o) => ({ type: "order", ...o })),
+		...filteredReturns.map((r) => ({ type: "return", ...r })),
+	];
 
 	return (
 		<div>
@@ -86,11 +128,17 @@ export default function Home() {
 					Returns
 				</button>
 			</div>
+			<SearchBar
+				value={search}
+				onChange={(e) => setSearch(e.target.value)}
+				placeholder="Search an order, user, or return"
+				style={{ marginBottom: "1rem" }}
+			/>
 			{loading && <p>Loading...</p>}
 			{error && <p style={{ color: "red" }}>{error}</p>}
 			{page === "customers" && (
 				<CustomerPage
-					users={users}
+					users={filteredUsers}
 					orders={orders}
 					ledgerMemberships={ledgerMemberships}
 					orderLineItems={orderLineItems}
@@ -104,16 +152,18 @@ export default function Home() {
 			)}
 			{page === "orders" && (
 				<OrdersPage
-					orders={orders}
+					orders={filteredOrders}
 					users={users}
 					selectedOrder={selectedOrder}
 					setSelectedOrder={setSelectedOrder}
 					orderLineItems={orderLineItems}
+					search={search}
+					setSearch={setSearch}
 				/>
 			)}
 			{page === "returns" && (
 				<ReturnsPage
-					returns={returns}
+					returns={filteredReturns}
 					users={users}
 					reverseShipments={reverseShipments}
 					exchanges={exchanges}

@@ -74,8 +74,8 @@ export default function OrdersPage({
 	selectedOrder,
 	setSelectedOrder,
 	orderLineItems,
+	search,
 }) {
-	const [search, setSearch] = useState("");
 	const [showSettings, setShowSettings] = useState(false);
 	const [visibleColumns, setVisibleColumns] = useState(DEFAULT_ORDER_COLUMNS);
 	const [sortKey, setSortKey] = useState(null);
@@ -139,6 +139,19 @@ export default function OrdersPage({
 		setCurrentPage(1);
 	}, [search, sortKey, sortDirection, visibleColumns]);
 
+	// Add this before rendering <DataTable>
+	const ordersWithUser = sortedOrders.map((order) => {
+		const user = users.find((u) => u.id === order.user_id);
+		return {
+			...order,
+			customer_name: user
+				? `${user.first_name} ${user.last_name}`
+				: "Unknown User",
+			user_id: order.user_id,
+			// add any other user fields you want to display
+		};
+	});
+
 	return (
 		<>
 			<div
@@ -147,7 +160,7 @@ export default function OrdersPage({
 					justifyContent: "space-between",
 					alignItems: "center",
 				}}>
-				<input
+				{/* <input
 					type="text"
 					placeholder="Search by order ID, status, or customer name"
 					value={search}
@@ -161,7 +174,7 @@ export default function OrdersPage({
 						borderRadius: 8,
 						marginRight: 16,
 					}}
-				/>
+				/> */}
 				<button
 					style={{
 						border: "2px solid #222",
@@ -284,7 +297,8 @@ export default function OrdersPage({
 
 			{/* table and pagination (always visible) */}
 			<DataTable
-				data={sortedOrders}
+				data={ordersWithUser}
+				users={users}
 				columns={ALL_ORDER_COLUMNS}
 				visibleColumns={visibleColumns}
 				sortKey={sortKey}
