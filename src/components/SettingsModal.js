@@ -9,7 +9,6 @@ export default function SettingsModal({
 	onColumnToggle,
 	onClearAll,
 	onResetDefault,
-	defaultColumns,
 }) {
 	if (!open) return null;
 	return (

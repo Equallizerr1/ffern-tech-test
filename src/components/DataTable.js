@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import SettingsButton from "./SettingsButton";
 
-// Generic data table component with sorting, pagination, row selection, and settings
+// Generic data table component with sorting, pagination, row selection, settings, and draggable columns
 export default function DataTable({
 	data,
 	columns,
 	visibleColumns,
+	setVisibleColumns, // <-- REQUIRED for column reordering!
 	sortKey,
 	sortDirection,
 	onSort,
@@ -25,7 +26,7 @@ export default function DataTable({
 		currentPage * rowsPerPage
 	);
 
-	// NEW: dual-scrollbar sync + real scrollable width
+	// Dual-scrollbar sync + real scrollable width
 	const topScrollRef = useRef(null);
 	const bottomWrapRef = useRef(null);
 	const tableRef = useRef(null);
@@ -87,7 +88,7 @@ export default function DataTable({
 		};
 	}, [columns, visibleColumns, data, minTableWidth, rowsPerPage, currentPage]);
 
-	// Optional: drag-to-scroll for the top scrollbar
+	// Drag-to-scroll for the top scrollbar
 	const isDraggingRef = useRef(false);
 	const dragStartXRef = useRef(0);
 	const startScrollLeftRef = useRef(0);
@@ -106,6 +107,36 @@ export default function DataTable({
 	const onMouseUpLeave = () => {
 		isDraggingRef.current = false;
 		if (topScrollRef.current) topScrollRef.current.style.cursor = "grab";
+	};
+
+	// --- DRAGGABLE COLUMN HEADERS ---
+	const [draggedCol, setDraggedCol] = useState(null);
+	const [dragOverCol, setDragOverCol] = useState(null);
+
+	const handleDragStart = (colKey) => setDraggedCol(colKey);
+	const handleDragOver = (colKey, e) => {
+		e.preventDefault();
+		setDragOverCol(colKey);
+	};
+	const handleDrop = (colKey) => {
+		if (
+			draggedCol &&
+			draggedCol !== colKey &&
+			typeof setVisibleColumns === "function"
+		) {
+			const from = visibleColumns.indexOf(draggedCol);
+			const to = visibleColumns.indexOf(colKey);
+			const newOrder = [...visibleColumns];
+			newOrder.splice(from, 1);
+			newOrder.splice(to, 0, draggedCol);
+			setVisibleColumns(newOrder);
+		}
+		setDraggedCol(null);
+		setDragOverCol(null);
+	};
+	const handleDragEnd = () => {
+		setDraggedCol(null);
+		setDragOverCol(null);
 	};
 
 	return (
@@ -146,24 +177,55 @@ export default function DataTable({
 					style={{ minWidth: minTableWidth }}>
 					<thead>
 						<tr>
-							{columns
-								.filter((col) => visibleColumns.includes(col.key))
-								.map((col) => (
+							{visibleColumns.map((colKey) => {
+								const col = columns.find((c) => c.key === colKey);
+								if (!col) return null;
+								return (
 									<th
 										key={col.key}
-										onClick={() => onSort && onSort(col.key)}
+										draggable
+										onDragStart={() => handleDragStart(col.key)}
+										onDragOver={(e) => handleDragOver(col.key, e)}
+										onDrop={() => handleDrop(col.key)}
+										onDragEnd={handleDragEnd}
 										style={{
-											cursor: onSort ? "pointer" : "default",
+											cursor: "move",
 											userSelect: "none",
-										}}>
+											opacity: draggedCol === col.key ? 0.5 : 1,
+											borderLeft:
+												dragOverCol === col.key && draggedCol !== col.key
+													? "3px solid #5b8cff"
+													: undefined,
+											background:
+												draggedCol === col.key
+													? "#222"
+													: dragOverCol === col.key && draggedCol !== col.key
+													? "#2a3142"
+													: undefined,
+											transition:
+												"background 0.15s, border 0.15s, opacity 0.15s",
+										}}
+										onClick={() => onSort && onSort(col.key)}>
 										{col.label}
 										{sortKey === col.key && (
 											<span style={{ marginLeft: 6 }}>
 												{sortDirection === "asc" ? "▲" : "▼"}
 											</span>
 										)}
+										<span
+											style={{
+												marginLeft: 6,
+												fontSize: "0.9em",
+												color: "#888",
+												cursor: "grab",
+												userSelect: "none",
+											}}
+											title="Drag to reorder">
+											☰
+										</span>
 									</th>
-								))}
+								);
+							})}
 						</tr>
 					</thead>
 					<tbody>
@@ -180,11 +242,11 @@ export default function DataTable({
 										if ((e.key === "Enter" || e.key === " ") && onRowClick)
 											onRowClick(row);
 									}}>
-									{columns
-										.filter((col) => visibleColumns.includes(col.key))
-										.map((col) => (
-											<td key={col.key}>{row[col.key] ?? "N/A"}</td>
-										))}
+									{visibleColumns.map((colKey) => {
+										const col = columns.find((c) => c.key === colKey);
+										if (!col) return null;
+										return <td key={col.key}>{row[col.key] ?? "N/A"}</td>;
+									})}
 								</tr>
 							);
 						})}

@@ -183,6 +183,7 @@ export default function OrdersPage({
 				users={users}
 				columns={ALL_ORDER_COLUMNS}
 				visibleColumns={visibleColumns}
+				setVisibleColumns={setVisibleColumns}
 				sortKey={sortKey}
 				sortDirection={sortDirection}
 				onSort={handleSort}
