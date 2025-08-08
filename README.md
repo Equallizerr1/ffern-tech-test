@@ -115,4 +115,4 @@ For any questions or support, please contact:
 
 ---
 
-This README now includes project information, goals, a quick start guide, feature highlights, and usage instructions, along with all
+This README now includes project information, goals, a quick start guide, feature highlights, and usage instructions, along with all previous user guide content.
