@@ -3,6 +3,7 @@ import OrderDetailsModal from "./OrderDetailsModal";
 import CustomerDetailsModal from "./CustomerDetailsModal";
 import DataTable from "./DataTable";
 import SettingsModal from "./SettingsModal";
+import SettingsButton from "./SettingsButton";
 
 const ALL_COLUMNS = [
 	{ key: "id", label: "ID" },
@@ -105,21 +106,10 @@ export default function CustomerPage({
 					justifyContent: "space-between",
 					alignItems: "center",
 				}}>
-				<button
-					style={{
-						border: "2px solid #222",
-						borderRadius: 4,
-						padding: "4px 12px",
-						background: "#fff",
-						color: "#222",
-						cursor: "pointer",
-						outline: "2px solid #222",
-						fontWeight: "bold",
-						marginLeft: 8,
-					}}
-					onClick={() => setShowSettings(true)}>
-					Settings
-				</button>
+				<h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+					Customers Page
+				</h1>
+				<SettingsButton onClick={() => setShowSettings(true)} />
 			</div>
 
 			<SettingsModal

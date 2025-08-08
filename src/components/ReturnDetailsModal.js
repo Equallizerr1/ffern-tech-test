@@ -5,6 +5,7 @@ export default function ReturnDetailsModal({
 	reverseShipments,
 	exchanges,
 	exchangeLineItems,
+	orderLineItems,
 	onClose,
 }) {
 	if (!returnOrder) return null;
@@ -17,10 +18,6 @@ export default function ReturnDetailsModal({
 	const relatedExchanges = exchanges.filter(
 		(e) => e.return_id === returnOrder.id
 	);
-	// Get exchange items for a return
-	// const exchangeItems = exchangeLineItems.filter(
-	// 		(item) => item.exchange_id === relatedExchanges[0].id
-	// 	);
 
 	return (
 		<div
@@ -189,52 +186,94 @@ export default function ReturnDetailsModal({
 				<h3 style={{ marginTop: 24, fontSize: "1.2rem" }}>Exchanges</h3>
 				<ul>
 					{relatedExchanges.length === 0 && <li>No exchanges found.</li>}
-					{relatedExchanges.map((exch) => (
-						<li key={exch.id} style={{ marginBottom: 8 }}>
-							<p>
-								Exchange ID: <b>{exch.id}</b>
-							</p>
-							<p>
-								Replacement Item: <b>{exch.replacement_item || "N/A"}</b>
-							</p>
-							<p>
-								Status: <b>{exch.status || "N/A"}</b>
-							</p>
-							{/* Exchange Line Items */}
-							{exchangeLineItems &&
-								exchangeLineItems
-									.filter((item) => item.exchange_id === exch.id)
-									.map((item, idx) => (
-										<div
-											key={item.id || idx}
-											style={{ marginLeft: 16, marginBottom: 4 }}>
-											<p>
-												Product:{" "}
-												<b>{item.product_name || item.product_id || "N/A"}</b>
-											</p>
-											<p>
-												Quantity: <b>{item.quantity || "N/A"}</b>
-											</p>
-											<p>
-												Unit Price:{" "}
-												<b>
-													{item.unit_price !== undefined
-														? `£${item.unit_price}`
-														: "N/A"}
-												</b>
-											</p>
-											<p>
-												Total:{" "}
-												<b>
-													{item.amount !== undefined
-														? `£${item.amount}`
-														: "N/A"}
-												</b>
-											</p>
-										</div>
-									))}
-						</li>
-					))}
+					{relatedExchanges.map((exch) => {
+						// Find original order line items for this exchange
+						const originalOrderItems = orderLineItems
+							? orderLineItems.filter(
+									(item) => item.order_id === exch.exchanged_order_id
+							  )
+							: [];
+						console.log("Original Order Items:", orderLineItems);
+						return (
+							<li key={exch.id} style={{ marginBottom: 8 }}>
+								<p>
+									Exchange ID: <b>{exch.id}</b>
+								</p>
+								<p>
+									Replacement Item: <b>{exch.replacement_item || "N/A"}</b>
+								</p>
+								<p>
+									Status: <b>{exch.status || "N/A"}</b>
+								</p>
+								{/* Exchange Line Items */}
+								{exchangeLineItems &&
+									exchangeLineItems
+										.filter((item) => item.exchange_id === exch.id)
+										.map((item, idx) => (
+											<div
+												key={item.id || idx}
+												style={{ marginLeft: 16, marginBottom: 4 }}>
+												<p>
+													Product:{" "}
+													<b>{item.product_name || item.product_id || "N/A"}</b>
+												</p>
+												<p>
+													Quantity: <b>{item.quantity || "N/A"}</b>
+												</p>
+												<p>
+													Unit Price:{" "}
+													<b>
+														{item.unit_price !== undefined
+															? `£${item.unit_price}`
+															: "N/A"}
+													</b>
+												</p>
+												<p>
+													Total:{" "}
+													<b>
+														{item.amount !== undefined
+															? `£${item.amount}`
+															: "N/A"}
+													</b>
+												</p>
+											</div>
+										))}
+								{/* Original Order Line Items */}
+								{originalOrderItems.length > 0 && (
+									<div style={{ marginLeft: 16, marginTop: 8 }}>
+										<p style={{ fontWeight: "bold" }}>Original Order Items:</p>
+										{originalOrderItems.map((item, idx) => (
+											<div key={item.id || idx} style={{ marginBottom: 4 }}>
+												<p>
+													Product:{" "}
+													<b>{item.product_name || item.product_id || "N/A"}</b>
+												</p>
+												<p>
+													Quantity: <b>{item.quantity || "N/A"}</b>
+												</p>
+												<p>
+													Unit Price:{" "}
+													<b>
+														{item.unit_price !== undefined
+															? `£${item.unit_price}`
+															: "N/A"}
+													</b>
+												</p>
+												<p>
+													Total:{" "}
+													<b>
+														{item.amount !== undefined
+															? `£${item.amount}`
+															: "N/A"}
+													</b>
+												</p>
+											</div>
+										))}
+									</div>
+								)}
+							</li>
+						);
+					})}
 				</ul>
 			</div>
 		</div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DataTable from "./DataTable";
 import ReturnDetailsModal from "./ReturnDetailsModal";
 import SettingsModal from "./SettingsModal"; // <-- Import the SettingsModal
+import SettingsButton from "./SettingsButton";
 
 const ALL_RETURN_COLUMNS = [
 	{ key: "id", label: "Return ID" },
@@ -28,6 +29,7 @@ export default function ReturnsPage({
 	reverseShipments,
 	exchanges,
 	exchangeLineItems,
+	orderLineItems,
 }) {
 	const [selectedReturn, setSelectedReturn] = useState(null);
 	const [showSettings, setShowSettings] = useState(false);
@@ -100,27 +102,14 @@ export default function ReturnsPage({
 
 	return (
 		<div>
-			<h1>Returns Page</h1>
 			<div
 				style={{
 					display: "flex",
-					justifyContent: "flex-end",
-					marginBottom: 12,
+					justifyContent: "space-between",
+					alignItems: "center",
 				}}>
-				<button
-					style={{
-						border: "2px solid #222",
-						borderRadius: 4,
-						padding: "4px 12px",
-						background: "#fff",
-						color: "#222",
-						cursor: "pointer",
-						outline: "2px solid #222",
-						fontWeight: "bold",
-					}}
-					onClick={() => setShowSettings(true)}>
-					Settings
-				</button>
+				<h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>Returns Page</h1>
+				<SettingsButton onClick={() => setShowSettings(true)} />
 			</div>
 			<SettingsModal
 				open={showSettings}
@@ -145,6 +134,7 @@ export default function ReturnsPage({
 					reverseShipments={reverseShipments}
 					exchanges={exchanges}
 					exchangeLineItems={exchangeLineItems}
+					orderLineItems={orderLineItems}
 					onClose={() => setSelectedReturn(null)}
 				/>
 			)}

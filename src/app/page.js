@@ -163,6 +163,7 @@ export default function Home() {
 					reverseShipments={reverseShipments}
 					exchanges={exchanges}
 					exchangeLineItems={exchangeLineItems}
+					orderLineItems={orderLineItems}
 				/>
 			)}
 		</div>
