@@ -110,6 +110,7 @@ export default function OrderDetailsModal({
 								"N/A"
 							)}
 						</p>
+						<p>Delivery Status: {order.delivery_status || "N/A"}</p>
 					</div>
 					{/* Customer Details Section */}
 					<div style={{ minWidth: 320, flex: "0 0 320px" }}>

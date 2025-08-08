@@ -11,14 +11,21 @@ export default function ReturnDetailsModal({
 }) {
 	if (!returnOrder) return null;
 
-	// Find all reverse shipments for this return
-	const shipments = reverseShipments.filter(
-		(rs) => rs.return_id === returnOrder.id
-	);
-	// Find all exchanges for this return
-	const relatedExchanges = exchanges.filter(
-		(e) => e.return_id === returnOrder.id
-	);
+	// Scope related records to this return to avoid undefined refs
+	const relatedReverseShipments = Array.isArray(reverseShipments)
+		? reverseShipments.filter((rs) => rs.return_id === returnOrder.id)
+		: [];
+
+	const relatedExchanges = Array.isArray(exchanges)
+		? exchanges.filter((ex) => ex.return_id === returnOrder.id)
+		: [];
+
+	// Example fields; adjust to your actual return schema
+	const refundAmount =
+		returnOrder.refund_amount ?? returnOrder.credit_amount ?? null;
+	const refundStatus =
+		returnOrder.refund_status ?? returnOrder.credit_status ?? null;
+	const refundMethod = returnOrder.refund_method ?? null;
 
 	return (
 		<div
@@ -98,13 +105,27 @@ export default function ReturnDetailsModal({
 				<p>
 					Credit Issued: <b>{returnOrder.credit_issued ? "Yes" : "No"}</b>
 				</p>
+				{/* Refund / Credit section */}
+				<h3 style={{ marginTop: 16 }}>Refund / Credit</h3>
+				<p>
+					<b>Amount:</b> {refundAmount != null ? `£${refundAmount}` : "N/A"}
+				</p>
+				<p>
+					<b>Status:</b> {refundStatus || "N/A"}
+				</p>
+				<p>
+					<b>Method:</b> {refundMethod || "N/A"}
+				</p>
+
 				{/* Reverse Shipments section */}
 				<h3 style={{ marginTop: 24, fontSize: "1.2rem", fontWeight: "bold" }}>
 					Reverse Shipments
 				</h3>
 				<ul>
-					{shipments.length === 0 && <li>No reverse shipments found.</li>}
-					{shipments.map((shipment) => (
+					{relatedReverseShipments.length === 0 && (
+						<li>No reverse shipments found.</li>
+					)}
+					{relatedReverseShipments.map((shipment) => (
 						<li key={shipment.id} style={{ marginBottom: 8 }}>
 							<p>
 								Tracking Number: <b>{shipment.tracking_number || "N/A"}</b>

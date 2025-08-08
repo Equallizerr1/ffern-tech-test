@@ -5,10 +5,15 @@ export default function CustomerDetailsModal({
 	user,
 	orders,
 	ledgerMemberships,
+	setSelectedUser,
 	setSelectedOrder,
+	orderLineItems,
 	onClose,
 }) {
 	if (!user) return null;
+
+	// Orders for this user
+	const userOrders = (orders || []).filter((o) => o.user_id === user.id);
 
 	return (
 		<div
@@ -57,100 +62,96 @@ export default function CustomerDetailsModal({
 					onClick={onClose}>
 					Close
 				</button>
-				<div style={{ display: "flex", gap: 32 }}>
-					{/* Customer Profile */}
-					<div style={{ minWidth: 260, flex: "0 0 260px" }}>
-						<h2 style={{ marginTop: 12, fontSize: "1.5rem" }}>
-							Customer Profile
-						</h2>
-						<p>Name: {`${user.first_name} ${user.last_name}`}</p>
-						<p>Email: {user.email}</p>
-						<p>Phone: {user.phone || "N/A"}</p>
-						<p>Address: {user.address || "N/A"}</p>
-						<p>Membership: {user.is_active ? "Active" : "Inactive"}</p>
-					</div>
-					{/* Memberships */}
-					<div style={{ minWidth: 260, flex: "0 0 260px" }}>
-						<h3 style={{ marginTop: 12, fontSize: "1.2rem" }}>Memberships</h3>
-						<ul>
-							{ledgerMemberships
-								.filter(
-									(m) => m.user_id === user.id || m.user_uuid === user.user_uuid
-								)
-								.map((membership) => (
-									<li key={membership.id} style={{ marginBottom: 8 }}>
-										Membership ID: {membership.id}
-										<br />
-										Member Since:{" "}
-										{user.created_at
-											? new Date(user.created_at).toLocaleDateString()
-											: "N/A"}
-										<br />
-										Membership Type: {membership.season_type}
-										<br />
-										Items Type: {membership.items_type}
-										<br />
-										Chargebee ID: {membership.chargebee_customer_id || "N/A"}
-										<br />
-										Chargebee Status:{" "}
-										{membership.chargebee_subscription_status || "N/A"}
-										<br />
-										Next Billing Date:{" "}
-										{membership.chargebee_next_billing_at
-											? new Date(
-													membership.chargebee_next_billing_at
-											  ).toLocaleDateString()
-											: "N/A"}
-									</li>
-								))}
-						</ul>
-					</div>
-				</div>
-				{/* Orders below */}
-				<div>
-					<h3 style={{ marginTop: 24, fontSize: "1.2rem" }}>Orders</h3>
+
+				{/* Basic user info */}
+				<h2 style={{ marginTop: 12, fontSize: "1.2rem" }}>Customer Profile</h2>
+				<p>
+					<b>Name:</b> {user.first_name} {user.last_name}
+				</p>
+				<p>
+					<b>Email:</b> {user.email}
+				</p>
+				<p>
+					<b>UUID:</b> {user.user_uuid}
+				</p>
+
+				{/* Membership details */}
+				<h3 style={{ marginTop: 16, fontSize: "1.2rem" }}>Membership</h3>
+				{ledgerMemberships.length ? (
 					<ul>
-						{orders
-							.filter((order) => order.user_id === user.id)
-							.map((order) => (
-								<li key={order.id} style={{ marginBottom: 8 }}>
-									<button
-										style={{
-											marginRight: 8,
-											border: "2px solid #222",
-											borderRadius: 4,
-											padding: "4px 12px",
-											background: "#fff",
-											color: "#222",
-											cursor: "pointer",
-											outline: "2px solid #222",
-											fontWeight: "bold",
-										}}
-										onClick={() => setSelectedOrder(order)}>
-										View
-									</button>
-									Order #{order.id} - Status:{" "}
-									{order.delivery_status ? (
-										order.delivery_status
-									) : order.tracking_url ? (
-										<a
-											href={order.tracking_url}
-											target="_blank"
-											rel="noopener noreferrer"
-											style={{
-												color: "#0074d9",
-												textDecoration: "underline",
-												fontWeight: "bold",
-											}}>
-											Track
-										</a>
-									) : (
-										"N/A"
-									)}
+						{ledgerMemberships
+							.filter(
+								(m) => m.user_id === user.id || m.user_uuid === user.user_uuid
+							)
+							.map((membership) => (
+								<li key={membership.id} style={{ marginBottom: 8 }}>
+									Membership ID: {membership.id}
+									<br />
+									Member Since:{" "}
+									{user.created_at
+										? new Date(user.created_at).toLocaleDateString()
+										: "N/A"}
+									<br />
+									Membership Type: {membership.season_type}
+									<br />
+									Items Type: {membership.items_type}
+									<br />
+									Chargebee ID: {membership.chargebee_customer_id || "N/A"}
+									<br />
+									Chargebee Status:{" "}
+									{membership.chargebee_subscription_status || "N/A"}
+									<br />
+									Next Billing Date:{" "}
+									{membership.chargebee_next_billing_at
+										? new Date(
+												membership.chargebee_next_billing_at
+										  ).toLocaleDateString()
+										: "N/A"}
 								</li>
 							))}
 					</ul>
-				</div>
+				) : (
+					<p>No membership found.</p>
+				)}
+
+				{/* Orders for this customer */}
+				<h3 style={{ marginTop: 16, fontSize: "1.2rem" }}>Orders</h3>
+				{userOrders.length ? (
+					<ul>
+						{userOrders.map((o) => (
+							<li key={o.id} style={{ marginBottom: 8 }}>
+								<div>
+									<b>Order:</b> {o.id}
+								</div>
+								<div>
+									<b>Status:</b>{" "}
+									{o.delivery_status ?? o.fulfillment_status ?? "N/A"}
+								</div>
+								<div>
+									<b>Created:</b>{" "}
+									{o.created_at
+										? new Date(o.created_at).toLocaleString()
+										: "N/A"}
+								</div>
+								<button
+									style={{
+										marginTop: 4,
+										border: "2px solid #222",
+										borderRadius: 4,
+										padding: "2px 8px",
+										background: "#fff",
+										cursor: "pointer",
+										fontWeight: "bold",
+									}}
+									onClick={() => setSelectedOrder && setSelectedOrder(o)}>
+									View details
+								</button>
+							</li>
+						))}
+					</ul>
+				) : (
+					<p>No orders for this customer.</p>
+				)}
 			</div>
 		</div>
 	);
