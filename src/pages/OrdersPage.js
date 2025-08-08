@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import OrderDetailsModal from "./OrderDetailsModal";
-import DataTable from "./DataTable";
-import SettingsModal from "./SettingsModal";
+import OrderDetailsModal from "../components/OrderDetailsModal";
+import DataTable from "../components/DataTable";
+import SettingsModal from "../components/SettingsModal";
 
 // Define all possible columns for the orders table
 const ALL_ORDER_COLUMNS = [

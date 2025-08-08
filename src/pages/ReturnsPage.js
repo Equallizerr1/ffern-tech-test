@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import ReturnDetailsModal from "./ReturnDetailsModal";
-import DataTable from "./DataTable";
-import SettingsModal from "./SettingsModal";
+import ReturnDetailsModal from "../components/ReturnDetailsModal";
+import DataTable from "../components/DataTable";
+import SettingsModal from "../components/SettingsModal";
 
 // Define all possible columns for the returns table
 const ALL_COLUMNS = [

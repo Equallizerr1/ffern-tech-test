@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { fetchUserDetails } from "../utils/fetchUserDetails";
-import CustomerPage from "../components/CustomerPage";
-import OrdersPage from "../components/OrdersPage";
-import ReturnsPage from "../components/ReturnsPage";
+import CustomerPage from "../pages/CustomerPage";
+import OrdersPage from "../pages/OrdersPage";
+import ReturnsPage from "../pages/ReturnsPage";
 import SearchBar from "../components/SearchBar";
 import UserGuideModal from "../components/UserGuideModal";
 import SupportModal from "../components/SupportModal";

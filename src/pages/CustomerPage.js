@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import OrderDetailsModal from "./OrderDetailsModal";
-import CustomerDetailsModal from "./CustomerDetailsModal";
-import DataTable from "./DataTable";
-import SettingsModal from "./SettingsModal";
+import OrderDetailsModal from "../components/OrderDetailsModal";
+import CustomerDetailsModal from "../components/CustomerDetailsModal";
+import DataTable from "../components/DataTable";
+import SettingsModal from "../components/SettingsModal";
 
 // Define all possible columns for the customers table
 const ALL_COLUMNS = [
