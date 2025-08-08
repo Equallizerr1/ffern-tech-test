@@ -1,56 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Customer Service Dashboard – User Guide
+
+## Overview
+
+This platform is designed to help customer service representatives efficiently handle customer inquiries, orders, returns, and exchanges. It provides a unified dashboard to search, view, and manage customer-related data.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+1. **Login** to the dashboard (if authentication is enabled).
+2. Use the navigation buttons at the top to switch between:
+   - **Customers**
+   - **Orders**
+   - **Returns**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Searching for Customers, Orders, or Returns
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- Use the **search bar** at the top of the dashboard to find customers, orders, or returns.
+- You can search by:
+  - Customer name, email, or UUID
+  - Order ID, tracking number, or customer details
+  - Return ID, status, reason, or customer details
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Viewing Details
 
-To learn more about Next.js, take a look at the following resources:
+- Click on any row in the table to open a detailed modal.
+- In the modal, you can view:
+  - **Customer Details:** Profile, memberships, and related orders.
+  - **Order Details:** Customer info, shipping/tracking, and line items.
+  - **Return Details:** Refunds, reverse shipments, exchanges, and original order items.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Handling Customer Inquiries
 
-## Deploy on Vercel
+1. **Search** for the customer or order in question.
+2. **Open the relevant details** by clicking the row.
+3. **Review all information** (order status, tracking, returns, exchanges, etc.).
+4. Use the information to answer the customer’s inquiry or resolve their issue.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Managing Columns
 
-Requirements
+- Click the **Settings** button to choose which columns are visible in each table.
+- You can reset to default columns or clear all columns for a custom view.
 
-1. Customer Search & Overview
+---
 
-- [x] Search functionality to find customers by email, name, or UUID
-- [x] Customer profile view showing basic information and membership status
-- [x] Display customer's membership details (membership type, status, billing info)
+## Troubleshooting
 
-2. Order Management
+- If data is not loading, check your internet connection and refresh the page.
+- If you see an error message, use the **Retry** button or contact your technical team.
 
-- [x] List all orders for a selected customer
-- [x] Order details view with line items and pricing
-- [x] Order status tracking (pending, shipped, delivered, etc.)
-- [x] Shipment information and tracking
-Bonus: 3. Returns & Exchanges
-If you have time, feel free to implement the following (but please only if you have time):
-- [ ] Return details including reasons and status
-- [ ] Exchange tracking and replacement item information
-- [ ] Credit/refund information for returns
+---
+
+## Security
+
+- Sensitive API credentials are securely stored and never exposed to the browser.
+- Only authorized users should have access to the dashboard.
+
+---
+
+## FAQ
+
+**Q: How do I find a customer by email?**  
+A: Enter the email address in the search bar and select the Customers tab.
+
+**Q: How do I check the status of a return?**  
+A: Go to the Returns tab, search by return ID or customer, and click the row for details.
+
+**Q: Can I see what was exchanged for a return?**  
+A: Yes, open the return details modal to see all related exchanges and original order items.
+
+---
+
+For further assistance, contact your technical support team.
